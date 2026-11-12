@@ -1,0 +1,2494 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<script>document.documentElement.classList.add('portfolio-initializing', 'portfolio-static-entry');</script>
+<style>
+/* The first frame must be invisible. Reveal only after assets and layout settle. */
+html.portfolio-initializing body,
+html.portfolio-initializing.returning-from-project body,
+html.portfolio-initializing.returning-from-project.home-return-ready body {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+/* A full-viewport curtain makes the fade independent of the homepage's many
+   existing opacity:1!important rules (which suppress ordinary body fades). */
+html.portfolio-initializing::after,
+html.portfolio-curtain-fading::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  background: #111111;
+  pointer-events: auto;
+  opacity: 1;
+}
+@keyframes portfolioCurtainOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+/* Returning visitors should not wait for every carousel image to decode.
+   Reveal the restored homepage behind a brief 320ms curtain. */
+html.portfolio-initializing.returning-from-project body {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+html.portfolio-initializing.returning-from-project::after {
+  pointer-events: none;
+  animation: portfolioCurtainOut 320ms cubic-bezier(.42,0,.22,1) both;
+}
+html.portfolio-curtain-fading::after {
+  pointer-events: none;
+  animation: portfolioCurtainOut 1050ms cubic-bezier(.42,0,.22,1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.portfolio-curtain-fading::after { animation-duration: 1ms; }
+}
+html.portfolio-page-fade-in:not(.portfolio-initializing) body {
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  transition: none !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.portfolio-page-fade-in:not(.portfolio-initializing) body { transition-duration: 0ms !important; }
+}
+/* Keep the entire first paint hidden until the header and both 3D carousels are stable. */
+/* Suppress all carousel movement during its first stable paint. */
+html.portfolio-static-entry .work-category .coverflow .project-card,
+html.portfolio-static-entry .work-category .coverflow .project-image,
+html.portfolio-static-entry .work-category .coverflow-stage {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Homepage fade is explicitly played once its content and landing position are ready. */
+/* Restartable return animation: plays AFTER both carousels and framing are ready.
+   Do not depend on an animation that may have finished before BFCache restoration. */
+html.returning-from-project.home-return-ready.home-return-fading body {
+  visibility: visible !important;
+  opacity: 1;
+}
+
+html:not(.portfolio-initializing) .work-category .coverflow,
+html:not(.portfolio-initializing) .work-category .coverflow.reveal,
+html:not(.portfolio-initializing) .work-category .coverflow .project-card {
+  visibility:visible !important;
+  opacity:1 !important;
+  animation:none !important;
+}
+/* Do not let scroll reveal transition the work headings or carousel containers. */
+.work-category > h3, .work-category .coverflow {
+  animation:none !important; transition:none !important;
+}
+</style>
+<script>
+/* Use the same 1.05s fade as project pages, starting AFTER the home view is ready.
+   Web Animations always finishes and never leaves the page permanently hidden. */
+window.portfolioPlayPageFade = function () {
+  // The homepage's single fade is controlled by the loading/reveal classes.
+  // Return navigation calls this once the carousel position is restored.
+  window.portfolioTryRevealHomepage?.();
+};
+</script>
+<script>
+(function(){
+  try {
+    if (sessionStorage.getItem('portfolioReturningFromProject') === '1') {
+      document.documentElement.classList.add('returning-from-project');
+      // Remove the incoming #work fragment before the browser's anchor jump.
+      // The homepage controller sets the exact framing after layout is ready.
+      if (location.hash === '#work') {
+        try { history.replaceState(history.state, '', location.pathname + location.search); } catch (_) {}
+      }
+      try { history.scrollRestoration = 'manual'; } catch (_) {}
+    }
+  } catch (_) {}
+})();
+</script>
+<style>
+/* A restored homepage is shown only once the work carousel is fully positioned. */
+/* Hide the ENTIRE homepage until both carousels have finished initializing. */
+/* The complete homepage fades in only AFTER its return framing and both carousels are ready. */
+/* Never conceal the whole homepage during return navigation: BFCache can
+   restore the page before the carousel preparation callback runs. */
+html.returning-from-project:not(.home-return-ready) body {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transition: none !important;
+}
+html.returning-from-project.home-return-ready body {
+  visibility: visible !important;
+  opacity: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  html.returning-from-project.home-return-ready body { transition: none !important; }
+}
+html.returning-from-project:not(.home-return-ready) .coverflow-stage,
+html.returning-from-project:not(.home-return-ready) .coverflow .project-card { animation: none !important; transition: none !important; }
+html.returning-from-project:not(.home-return-ready) { scroll-behavior: auto !important; }
+html.returning-from-project .reveal,
+html.returning-from-project [data-reveal] { opacity:1 !important; visibility:visible !important; transform:none !important; transition:none !important; animation:none !important; }
+html.returning-from-project:not(.home-return-ready) .coverflow .project-card,
+html.returning-from-project:not(.home-return-ready) .coverflow .project-image,
+html.returning-from-project:not(.home-return-ready) .coverflow .project-image::after { transition:none !important; animation:none !important; }
+html.returning-from-project:not(.home-return-ready) { scroll-behavior:auto !important; scroll-padding-top:0 !important; }
+html.returning-from-project:not(.home-return-ready) { overflow-anchor: none !important; }
+html.returning-from-project:not(.home-return-ready) body { scroll-behavior: auto !important; }
+
+
+/* Work headings and carousels are static from first paint; no entrance reveal. */
+.work-category > h3,
+.work-category > .coverflow {
+  animation: none !important;
+  transition: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Both work carousels appear fully composed, without entrance animations.
+   Hide each one until its images and initial 3D positions are ready. */
+.work-category .coverflow.reveal,
+html:not(.returning-from-project).motion-ready .work-category .coverflow.reveal,
+html:not(.returning-from-project).motion-ready .work-category .coverflow.reveal.is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+  transition: none !important;
+}
+.work-category .coverflow:not(.portfolio-images-ready) {
+  visibility: hidden !important;
+}
+.work-category .coverflow.portfolio-images-ready {
+  visibility: visible !important;
+}
+.coverflow-stage:not(.portfolio-carousel-ready) .project-card {
+  transition: none !important;
+}
+
+</style>
+<link as="image" href="images/projects/ellen bruh.png" rel="preload"/>
+<link as="image" href="images/projects/About to pull.png" rel="preload"/>
+<link as="image" href="images/projects/corner.png" rel="preload"/>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="Sonny Allt-Wilson — narrative, commercial and live video editor based in London and Brighton." name="description"/>
+<title>Sonny Allt-Wilson | Editor</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;1,500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="css/style.css" rel="stylesheet"/>
+<link href="css/editorial-grid.css" rel="stylesheet"/>
+<style>
+
+/* ONLY THE LONG COLLABORATION STATEMENT IS 20% SMALLER */
+#about .about-collaboration-statement p {
+    font-size: clamp(25.6px, 2.4vw, 34.4px);
+}
+
+/* SUBTLE INTERACTIVE EMPHASIS FOR BOTH EDITORIAL STATEMENTS */
+#about .about-manifesto p {
+    transform-origin: left center;
+    transition:
+        color 500ms ease,
+        text-shadow 500ms ease,
+        transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: 400ms;
+}
+
+#about .about-manifesto:hover p {
+    transition-delay: 0ms;
+    color: #fffaf0;
+    text-shadow:
+        0 0 15px rgba(245, 237, 222, 0.24),
+        0 0 35px rgba(245, 237, 222, 0.11);
+    transform: translateY(-3px);
+}
+
+#about .about-manifesto .about-manifesto-line {
+    transition:
+        width 600ms cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 500ms ease;
+    transition-delay: 400ms;
+}
+
+#about .about-manifesto:hover .about-manifesto-line {
+    transition-delay: 0ms;
+    width: 68px;
+    background-color: rgba(255, 250, 240, 0.88);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #about .about-manifesto p,
+    #about .about-manifesto .about-manifesto-line {
+        transition: none;
+    }
+    #about .about-manifesto:hover p {
+        transform: none;
+    }
+}
+
+/* ABOUT BIOGRAPHY */
+
+.about-text > p {
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: -0.15px;
+    color: #c8c8c8;
+    text-shadow: 0 0 8px rgba(245, 237, 222, 0.22), 0 0 20px rgba(245, 237, 222, 0.09);
+    max-width: 680px;
+}
+
+/* ABOUT GRID */
+
+#about .combined-about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(28px, 4vw, 70px);
+    align-items: start;
+}
+
+#about .about-text {
+    min-width: 0;
+}
+
+/* ABOUT ME HEADING — SAME FONT AS HERO */
+
+#about .about-text > h2 {
+    margin-bottom: 40px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: -1.1px;
+}
+
+#about .about-visuals {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-width: 0;
+    gap: 0;
+}
+
+/* CINEMA ALIGNMENT */
+
+#about #showreels {
+    position: relative;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background: transparent;
+    --cinema-shift: 0px;
+    top: var(--cinema-shift);
+    transform: none;
+}
+
+/* CINEMA */
+
+#showreels .retro-cinema {
+    position: relative;
+    width: 78%;
+    margin: 0 auto;
+    transform: translateX(-20px);
+    color: #efefed;
+    text-align: center;
+}
+
+#showreels .cinema-roof {
+    position: relative;
+    width: 32px;
+    height: 24px;
+    margin: 0 auto -1px;
+    background: transparent;
+    border: 1px solid rgba(240,240,236,.42);
+    border-bottom: 0;
+    clip-path: polygon(
+        50% 0%,
+        100% 55%,
+        100% 100%,
+        0 100%,
+        0 55%
+    );
+}
+
+#showreels .cinema-roof::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 7px;
+    right: 7px;
+    bottom: 0;
+    border: 1px solid rgba(240,240,236,.22);
+    border-bottom: 0;
+}
+
+/* MARQUEE */
+
+#showreels .cinema-marquee {
+    position: relative;
+    width: min(550px, 93%);
+    margin: 0 auto;
+    padding: 17px 14px 21px;
+    border: 1px solid rgba(237,237,234,.35);
+    background: transparent;
+}
+
+#showreels .cinema-marquee::before {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    border: 1px solid rgba(237,237,234,.12);
+    pointer-events: none;
+}
+
+#showreels .cinema-marquee::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    width: 18px;
+    height: 18px;
+    transform: translateX(-50%) rotate(45deg);
+    border-right: 1px solid rgba(237,237,234,.26);
+    border-bottom: 1px solid rgba(237,237,234,.26);
+    background: #111111;
+}
+
+#showreels .cinema-marquee h2 {
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: clamp(23px, 2.7vw, 36px);
+    font-weight: 400;
+    letter-spacing: .15em;
+    line-height: 1.1;
+    margin: 0 0 11px;
+    color: #eeede9;
+}
+
+/* SHOWREEL SELECTOR */
+
+#showreels .cinema-picker {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+#showreels #cinema-current-title {
+    display: block;
+    width: min(65%, 245px);
+    min-width: 0;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: clamp(10px, 1vw, 13px);
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: #bababa;
+}
+
+#showreels .cinema-picker button {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
+    background: transparent;
+    color: #c5c5c5;
+    border: 0;
+    padding: 0 0 4px;
+    font: 400 25px/1 Georgia, serif;
+    cursor: pointer;
+    transition: color .2s ease, transform .2s ease;
+}
+
+#showreels .cinema-picker button:hover {
+    color: #ffffff;
+    transform: scale(1.13);
+}
+
+#showreels .cinema-picker button:focus-visible {
+    outline: 1px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* CINEMA HOUSE */
+
+#showreels .cinema-house {
+    position: relative;
+    isolation: isolate;
+    margin-top: 9px;
+    padding: 35px 5% 215px;
+    background: transparent;
+}
+
+#showreels .cinema-house::before,
+#showreels .cinema-house::after {
+    content: none;
+}
+
+#showreels .cinema-ceiling {
+    display: none;
+}
+
+#showreels .cinema-floor-plane {
+    position: absolute;
+    z-index: 0;
+    left: -3%;
+    right: -3%;
+    bottom: 0;
+    height: 43%;
+    background: radial-gradient(
+        ellipse at 50% 0%,
+        rgba(210,210,210,.045),
+        transparent 67%
+    );
+    pointer-events: none;
+}
+
+/* CINEMA SCREEN */
+
+#showreels .cinema-screen-frame {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    margin: 0 auto;
+    padding: 5px;
+    border: 1px solid rgba(244,244,241,.43);
+    background: #111111;
+    box-shadow:
+        0 2px 35px rgba(0,0,0,.4),
+        0 0 0 7px rgba(255,255,255,.02);
+    transform: perspective(1500px) rotateX(-.8deg);
+}
+
+#showreels .cinema-screen {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16 / 8.6;
+    background: radial-gradient(
+        ellipse at 50% 45%,
+        #222222 0%,
+        #1a1a1a 55%,
+        #141414 100%
+    );
+}
+
+#showreels .cinema-screen video {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: #0b0b0b;
+}
+
+#showreels .cinema-screen video[hidden],
+#showreels .cinema-screen-placeholder[hidden] {
+    display: none;
+}
+
+#showreels .cinema-screen-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+}
+
+/* PLAY ICON */
+
+#showreels .cinema-film-icon {
+    position: relative;
+    width: 47px;
+    height: 47px;
+    border: 1px solid rgba(244,244,241,.32);
+    border-radius: 50%;
+}
+
+#showreels .cinema-film-icon::before,
+#showreels .cinema-film-icon::after {
+    display: none;
+}
+
+#showreels .cinema-film-icon span {
+    position: absolute;
+    top: 14px;
+    left: 19px;
+    width: 0;
+    height: 0;
+    border-top: 9px solid transparent;
+    border-bottom: 9px solid transparent;
+    border-left: 13px solid rgba(244,244,241,.58);
+}
+
+#showreels .cinema-screen-placeholder strong {
+    color: #d2d2d2;
+    font: 400 clamp(13px,1.6vw,19px)/1.4
+        "Instrument Sans", Arial, sans-serif;
+}
+
+#showreels .cinema-screen-placeholder small {
+    color: #828282;
+    font: 400 10px/1.4
+        "Instrument Sans", Arial, sans-serif;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+/* CINEMA SEATS */
+
+#showreels .cinema-seating {
+    position: absolute;
+    z-index: 3;
+    left: 0;
+    right: 0;
+    bottom: 10px;
+    height: 194px;
+    perspective: 720px;
+    pointer-events: none;
+    overflow: visible;
+    transform: scale(.69);
+    transform-origin: center bottom;
+}
+
+#showreels .cinema-seat-row {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: clamp(2px,.65vw,10px);
+}
+
+#showreels .cinema-seat {
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
+    width: clamp(54px,7.5vw,89px);
+    height: clamp(57px,7vw,81px);
+    background: #111111;
+    border: 2px solid #ddddda;
+    border-bottom: 0;
+    border-radius: 32px 32px 0 0 / 20px 20px 0 0;
+}
+
+#showreels .cinema-seat::before,
+#showreels .cinema-seat::after {
+    display: none;
+}
+
+#showreels .cinema-seat-row-back {
+    bottom: 145px;
+    transform: scale(.53);
+    transform-origin: center bottom;
+    z-index: 1;
+}
+
+#showreels .cinema-seat-row-back-mid {
+    bottom: 113px;
+    transform: scale(.65);
+    transform-origin: center bottom;
+    z-index: 2;
+}
+
+#showreels .cinema-seat-row-mid {
+    bottom: 78px;
+    transform: scale(.79);
+    transform-origin: center bottom;
+    z-index: 3;
+}
+
+#showreels .cinema-seat-row-front-mid {
+    bottom: 37px;
+    transform: scale(.95);
+    transform-origin: center bottom;
+    z-index: 4;
+}
+
+#showreels .cinema-seat-row-front {
+    bottom: 0;
+    transform: scale(1.17);
+    transform-origin: center bottom;
+    z-index: 5;
+}
+
+#showreels .cinema-floor,
+#showreels .cinema-hint {
+    display: none;
+}
+
+/* VIEW MY WORK BUTTON */
+
+#showreels .showreel-link {
+    position: relative;
+    z-index: 8;
+    width: 78%;
+    margin: 22px auto 0;
+    padding: 0;
+    transform: translateX(-20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#showreels .showreel-link .button {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    padding: 7px 13px;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: .035em;
+    line-height: 1.3;
+    color: #eeece7;
+    background: rgba(17,17,17,.94);
+    border: 1px solid rgba(238,236,231,.55);
+    border-radius: 2px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .2s ease, border-color .2s ease;
+}
+
+#showreels .showreel-link .button:hover {
+    background: #262626;
+    border-color: #ffffff;
+}
+
+/* PHOTOGRAPHS */
+
+#about .about-images {
+    --photo-gap: 207.5px;
+    position: relative;
+    display: grid;
+    grid-template-columns:
+        repeat(2, minmax(0, calc((100% - 34px) / 2)));
+    column-gap: 44px;
+    justify-content: center;
+    align-items: start;
+    width: 100%;
+    max-width: none;
+    margin-top: var(--photo-gap);
+    padding: 0 22px;
+    box-sizing: border-box;
+}
+
+#about .about-images::before {
+    content: none;
+    display: none;
+}
+
+#about .about-image {
+    position: relative;
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    margin-left: 0;
+    margin-right: 0;
+    left: auto;
+    overflow: hidden;
+    isolation: isolate;
+    background: #111111;
+    border-radius: 6px;
+    box-shadow:
+        0 10px 24px rgba(0,0,0,.26),
+        0 4px 12px rgba(0,0,0,.2);
+}
+
+#about .about-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background:
+        radial-gradient(
+            120% 118% at 50% 42%,
+            rgba(17,17,17,0) 54%,
+            rgba(17,17,17,.08) 68%,
+            rgba(17,17,17,.24) 82%,
+            rgba(17,17,17,.52) 92%,
+            rgba(17,17,17,.82) 100%
+        ),
+        linear-gradient(
+            to bottom,
+            rgba(17,17,17,0) 0%,
+            rgba(17,17,17,0) 60%,
+            rgba(17,17,17,.1) 76%,
+            rgba(17,17,17,.32) 88%,
+            rgba(17,17,17,.72) 100%
+        );
+}
+
+/* PORTRAIT LOWER */
+
+#about .about-image-two {
+    margin-top: 48px;
+}
+
+/* GRADUATION HIGHER */
+
+#about .about-image-one {
+    margin-top: 0;
+}
+
+#about .about-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    object-fit: contain;
+    object-position: center;
+    transform: scale(1.01);
+}
+
+/* TABLET */
+
+@media (max-width: 800px) {
+    .about-text > p {
+        font-size: 19px;
+        line-height: 1.7;
+    }
+
+    #about .combined-about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    #about .about-visuals {
+        gap: 0;
+    }
+
+    #about .about-text > h2 {
+        margin-bottom: 35px;
+    }
+
+    #about #showreels {
+        --cinema-shift: 0px;
+    }
+
+    #about .about-images {
+        --photo-gap: 135px;
+        grid-template-columns:
+            repeat(2, minmax(0, calc((100% - 22px) / 2)));
+        column-gap: 30px;
+        padding: 0 12px;
+    }
+
+    #about .about-image-two {
+        margin-top: 36px;
+    }
+}
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+    #showreels .retro-cinema {
+        width: 95%;
+        transform: none;
+    }
+
+    #showreels .cinema-roof {
+        width: 26px;
+        height: 20px;
+    }
+
+    #showreels .cinema-marquee {
+        padding: 18px 8px 20px;
+    }
+
+    #showreels .cinema-marquee h2 {
+        font-size: clamp(24px,6vw,36px);
+        letter-spacing: .13em;
+        margin-bottom: 12px;
+    }
+
+    #showreels .cinema-picker {
+        gap: 4px;
+    }
+
+    #showreels #cinema-current-title {
+        width: 65%;
+        font-size: 10px;
+    }
+
+    #showreels .cinema-picker button {
+        width: 24px;
+        height: 24px;
+        flex-basis: 24px;
+    }
+
+    #showreels .cinema-house {
+        padding: 34px 5% 158px;
+    }
+
+    #showreels .cinema-screen-frame {
+        padding: 3px;
+    }
+
+    #showreels .cinema-seating {
+        height: 127px;
+        bottom: 12px;
+        transform: scale(.87);
+        overflow: visible;
+    }
+
+    #showreels .cinema-seat-row {
+        gap: 4px;
+    }
+
+    #showreels .cinema-seat {
+        width: 35px;
+        height: 44px;
+        border-width: 1.6px;
+        border-radius: 15px 15px 0 0 / 11px 11px 0 0;
+    }
+
+    #showreels .cinema-seat-row-back {
+        bottom: 102px;
+    }
+
+    #showreels .cinema-seat-row-back-mid {
+        bottom: 81px;
+    }
+
+    #showreels .cinema-seat-row-mid {
+        bottom: 59px;
+    }
+
+    #showreels .cinema-seat-row-front-mid {
+        bottom: 35px;
+    }
+
+    #showreels .cinema-seat-row-front {
+        bottom: 0;
+    }
+
+    #showreels .cinema-film-icon {
+        width: 31px;
+        height: 31px;
+    }
+
+    #showreels .cinema-film-icon span {
+        top: 8px;
+        left: 12px;
+        border-top-width: 7px;
+        border-bottom-width: 7px;
+        border-left-width: 10px;
+    }
+
+    #showreels .cinema-screen-placeholder {
+        gap: 5px;
+    }
+
+    #showreels .cinema-screen-placeholder strong {
+        font-size: 12px;
+    }
+
+    #showreels .cinema-screen-placeholder small {
+        font-size: 8px;
+    }
+
+    #showreels .showreel-link {
+        width: 95%;
+        transform: none;
+        margin-top: 22px;
+    }
+
+    #showreels .showreel-link .button {
+        font-size: 10px;
+        padding: 6px 10px;
+    }
+
+    #about .about-images {
+        --photo-gap: 102.5px;
+        grid-template-columns:
+            repeat(2, minmax(0, calc((100% - 15px) / 2)));
+        column-gap: 19px;
+        padding: 0 5px;
+    }
+
+    #about .about-image-two {
+        margin-top: 28px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #showreels .cinema-picker button,
+    #showreels .showreel-link .button {
+        transition: none;
+    }
+}
+
+/* Align availability text to the heading and add breathing room. */
+.contact-heading > h2 {
+    margin-left: 0;
+    padding-left: 0;
+}
+.contact-heading > .contact-availability {
+    /* Align the visible letterforms with the large heading. */
+    margin-left: 7px;
+    padding-left: 0;
+    text-indent: 0;
+    margin-top: 32px;
+    margin-bottom: 0;
+    color: #b2b2b2;
+    font-weight: 400;
+}
+
+/* Keep the contact section compact and balance both columns. */
+#contact.contact-section {
+    padding-top: 75px;
+    padding-bottom: 65px;
+}
+
+#contact .contact-details {
+    padding-top: 48px;
+    margin-left: 40px;
+    min-width: 0;
+}
+
+@media (max-width: 800px) {
+    #contact .contact-details {
+        padding-top: 7px;
+        margin-left: 0;
+    }
+}
+
+</style>
+<style>
+/* About section only: editorial two-column composition without showreels. */
+#about .combined-about-grid {
+  grid-template-columns: minmax(0, 1.12fr) minmax(280px, .88fr);
+  align-items: center;
+  column-gap: clamp(38px, 5vw, 90px);
+}
+#about .about-visuals {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 0;
+}
+#about .about-images {
+  width: 100%;
+  max-width: 390px;
+  margin: 0 auto;
+  gap: clamp(42px, 5vw, 72px);
+}
+#about .about-image-one { margin-top: 0; }
+@media (max-width: 800px) {
+  #about .combined-about-grid { grid-template-columns: minmax(0,1fr); row-gap: 55px; }
+  #about .about-images {
+    flex-direction: row;
+    max-width: 600px;
+    gap: clamp(14px, 4vw, 32px);
+    align-items: center;
+  }
+  #about .about-image { width: calc(50% - 16px); margin: 0; left: 0; }
+  #about .about-image-two { transform: translateY(-14px); }
+  #about .about-image-one { transform: translateY(14px); }
+}
+</style>
+<style id="about-landscape-refinement">
+/* About only: wide editorial layout; no changes to Work, navigation or animations. */
+@media (min-width: 1051px) {
+  #about.about { padding: 48px 4.5% 54px; }
+  #about .combined-about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2.55fr) minmax(260px, 0.9fr);
+    column-gap: clamp(34px, 3.7vw, 64px);
+    align-items: center;
+  }
+  #about .about-text {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: clamp(25px, 2.7vw, 48px);
+    row-gap: 13px;
+    align-content: center;
+  }
+  #about .about-text > h2 { grid-column: 1 / -1; margin: 0 0 15px; font-size: clamp(38px, 4vw, 54px); }
+  #about .about-text > p { font-size: clamp(15px, 1.16vw, 17px); line-height: 1.58; margin: 0; max-width: none; }
+  #about .about-text > p:nth-of-type(1) { grid-column:1; grid-row:2; }
+  #about .about-text > p:nth-of-type(2) { grid-column:1; grid-row:3; }
+  #about .about-text > .about-manifesto:not(.about-collaboration-statement) { grid-column:1; grid-row:4; align-self:start; }
+  #about .about-text > p:nth-of-type(3) { grid-column:2; grid-row:2; }
+  #about .about-text > .about-collaboration-statement { grid-column:2; grid-row:3 / span 2; align-self:start; }
+  #about .about-manifesto { margin: 5px 0 0; max-width:none; }
+  #about .about-manifesto-line { margin-bottom: 11px; width:32px; }
+  #about .about-manifesto p { font-size: clamp(21px, 1.72vw, 28px); line-height:1.28; letter-spacing:-.4px; }
+  #about .about-collaboration-statement p { font-size: clamp(17px, 1.35vw, 21px); line-height:1.41; }
+  #about .about-visuals { justify-content:center; align-self:stretch; }
+  #about .about-images { display:grid; grid-template-columns: 1fr 1fr; align-items:center; gap:12px; margin:0; width:100%; max-width:none; }
+  #about .about-images::before { display:none; }
+  #about .about-image, #about .about-image-one, #about .about-image-two {
+    width:100%; max-width:none; aspect-ratio: 3 / 4; height:auto;
+    margin:0; left:auto; top:auto; transform:none;
+  }
+}
+@media (min-width: 1051px) and (max-width: 1260px) {
+  #about .combined-about-grid { grid-template-columns: minmax(0, 2.85fr) minmax(205px, .8fr); gap:25px; }
+  #about .about-text { column-gap:24px; }
+  #about .about-text > p { font-size:15px; }
+  #about .about-manifesto p { font-size:20px; }
+  #about .about-collaboration-statement p { font-size:17px; }
+}
+@media (min-width: 700px) and (max-width: 1050px) {
+  #about.about { padding: 44px 5% 50px; }
+  #about .combined-about-grid { grid-template-columns: 1fr; gap:26px; }
+  #about .about-text > h2 { margin-bottom:21px; }
+  #about .about-text > p { font-size:17px; line-height:1.6; margin-bottom:16px; }
+  #about .about-manifesto { margin:22px 0; }
+  #about .about-images { display:flex; flex-direction:row; gap:22px; width:min(100%,660px); max-width:660px; margin:0 auto; }
+  #about .about-image-one, #about .about-image-two { width:48%; left:auto; margin:0; aspect-ratio:4/3; }
+}
+</style>
+<style id="about-photo-natural-proportions-fix">
+/* Let both About photographs show their complete original frames.
+   The previous 3:4 cards were taller than the displayed images, creating
+   empty dark strips beneath the photos. Does not affect any other images. */
+#about .about-images .about-image,
+#about .about-images .about-image-one,
+#about .about-images .about-image-two {
+  aspect-ratio: auto !important;
+  height: auto !important;
+}
+#about .about-images .about-image > img {
+  display: block;
+  width: 100%;
+  height: auto !important;
+  aspect-ratio: auto !important;
+  object-fit: contain !important;
+  transform: none;
+}
+</style>
+<style>
+/* Interactive editorial carousel headings — no effect on card animation. */
+.work-category > h3 {font-size:inherit; margin-left:auto; margin-right:auto;}
+.work-category > h3 .work-heading-link {
+  display:inline-flex; flex-direction:column; align-items:center;
+  gap:13px; text-decoration:none; color:inherit;
+  font-family:"Instrument Sans",Arial,sans-serif;
+  font-style:normal; font-weight:400;
+  font-size:clamp(19px, 1.8vw, 26px);
+  line-height:1.3; letter-spacing:.095em; cursor:pointer;
+  white-space:nowrap;
+  transition:color .32s ease, text-shadow .32s ease, letter-spacing .32s ease;
+}
+.work-category > h3 .work-heading-rule {
+  display:block; width:78px; height:1px;
+  background:currentColor; opacity:.85;
+  transform:scaleX(1);
+  transition:width .42s cubic-bezier(.2,.75,.25,1),opacity .32s ease;
+}
+.work-category > h3 .work-heading-link:hover,
+.work-category > h3 .work-heading-link:focus-visible {
+  color:#fff; text-shadow:0 0 14px rgba(255,255,255,.26);
+  letter-spacing:.115em;
+}
+.work-category > h3 .work-heading-link:hover .work-heading-rule,
+.work-category > h3 .work-heading-link:focus-visible .work-heading-rule {
+  width:155px; opacity:1;
+}
+.work-category > h3 .work-heading-link:focus-visible {outline:1px solid currentColor;outline-offset:8px;}
+/* Match three vertical gaps: top divider to Narrative heading,
+   first carousel controls to Commercial heading, and last carousel
+   controls to the divider below the Work section. */
+#work.work-page { padding-bottom:55px; }
+/* Add breathing room after the first carousel arrows, before the next title. */
+#work > .work-category + .work-category { margin-top: 65px; }
+@media(max-width:640px){
+  .work-category > h3 .work-heading-link{font-size:clamp(16px,4.7vw,20px);letter-spacing:.065em;}
+  #work > .work-category + .work-category{margin-top:65px;}
+}
+@media(prefers-reduced-motion:reduce){
+  .work-category > h3 .work-heading-link,
+  .work-category > h3 .work-heading-rule{transition:none;}
+}
+</style>
+<style id="about-desk-photo-style">
+/* Third About Me photograph; existing photo pair, typography and layout unchanged. */
+#about .about-desk-photo {
+  width: min(100%, 390px);
+  margin: 20px auto 0;
+}
+#about .about-desk-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 3px;
+}
+</style>
+<style id="about-editorial-three-photo-layout">
+/* About Me only. All existing text, links, and reveal animations are retained. */
+@media (min-width: 1051px) {
+  #about.about { padding: clamp(58px, 5.7vw, 84px) 4.5% clamp(62px, 6vw, 90px) !important; }
+  #about .combined-about-grid {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.48fr) minmax(320px, 1fr) !important;
+    column-gap: clamp(36px, 4.3vw, 72px) !important;
+    align-items: center !important;
+  }
+  #about .about-text {
+    display:grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    column-gap: clamp(23px, 2.8vw, 43px) !important;
+    row-gap: 18px !important;
+    align-content:center !important;
+    min-width:0 !important;
+  }
+  #about .about-text > h2 {
+    grid-column:1 / -1 !important; grid-row:1 !important;
+    font-size: clamp(38px, 3.7vw, 52px) !important;
+    margin:0 0 10px !important;
+  }
+  #about .about-text > p {
+    font-size: clamp(15px, 1.13vw, 17px) !important;
+    line-height:1.65 !important; margin:0 !important;
+    max-width:none !important;
+  }
+  #about .about-text > p:nth-of-type(1) { grid-column:1 !important;grid-row:2 !important; }
+  #about .about-text > p:nth-of-type(2) { grid-column:1 !important;grid-row:3 !important; }
+  #about .about-text > .about-manifesto:not(.about-collaboration-statement) {grid-column:1 !important;grid-row:4 !important;}
+  #about .about-text > p:nth-of-type(3) {grid-column:2 !important;grid-row:2 / span 2 !important;}
+  #about .about-text > .about-collaboration-statement {grid-column:2 !important;grid-row:4 !important;}
+  #about .about-manifesto {margin:2px 0 0 !important; max-width:none !important;}
+  #about .about-manifesto-line {width:32px !important;margin-bottom:12px !important;}
+  #about .about-manifesto p {font-size:clamp(21px,1.7vw,26px) !important;line-height:1.32 !important;}
+  #about .about-collaboration-statement p {font-size:clamp(17px,1.33vw,20px) !important;line-height:1.48 !important;}
+  #about .about-visuals {display:flex !important; flex-direction:column !important; justify-content:center !important;align-items:stretch !important;min-width:0 !important;gap:13px !important;}
+  #about .about-images {display:grid !important;grid-template-columns:1fr 1fr !important;gap:13px !important;width:100% !important;max-width:none !important;margin:0 !important;align-items:start !important;}
+  #about .about-images::before {display:none !important;}
+  #about .about-images .about-image {width:100% !important;max-width:none !important;height:auto !important;aspect-ratio:auto !important;margin:0 !important;left:auto !important;top:auto !important;transform:none !important;overflow:hidden !important;border-radius:7px !important;}
+  #about .about-images .about-image img {display:block !important;width:100% !important;height:auto !important;object-fit:contain !important;aspect-ratio:auto !important;transform:none !important;border-radius:7px !important;}
+  #about .about-desk-photo {width:100% !important; max-width:none !important;margin:0 !important;overflow:hidden !important;border-radius:7px !important;}
+  #about .about-desk-photo img {width:100% !important;height:auto !important;display:block !important;border-radius:7px !important;}
+}
+@media (min-width:700px) and (max-width:1050px) {
+  #about .combined-about-grid {display:grid !important;grid-template-columns:minmax(0,1fr) !important;gap:30px !important;}
+  #about .about-visuals {display:grid !important;grid-template-columns:1fr 1fr !important;gap:16px !important;align-items:center !important;}
+  #about .about-images {display:grid !important;grid-template-columns:1fr 1fr !important;gap:14px !important;width:100% !important;max-width:none !important;}
+  #about .about-images .about-image {width:100% !important;margin:0 !important;}
+  #about .about-desk-photo {width:100% !important;max-width:none !important;margin:0 !important;}
+}
+@media (max-width:699px) {
+  #about .about-visuals {display:flex !important;flex-direction:column !important;gap:14px !important;}
+  #about .about-images {display:grid !important;grid-template-columns:1fr 1fr !important;gap:12px !important;width:100% !important;max-width:none !important;}
+  #about .about-images .about-image {width:100% !important;margin:0 !important;left:auto !important;transform:none !important;}
+  #about .about-desk-photo {width:100% !important;max-width:none !important;margin:0 !important;}
+}
+</style>
+<style id="about-final-direct-site-layout">
+/* Actual homepage About Me: bottom-left portrait pair, desk feature on right. */
+@media (min-width: 801px) {
+  #about .combined-about-grid { display:grid !important; grid-template-columns:minmax(0,1.22fr) minmax(0,.78fr) !important; column-gap:clamp(28px,4.5vw,78px) !important; align-items:start !important; }
+  #about .about-text { display:flex !important; flex-direction:column !important; align-items:stretch !important; min-width:0 !important; }
+  #about .about-text > * { grid-column:auto !important; grid-row:auto !important; }
+  #about .about-text #about-photo-pair { margin-top:clamp(22px,3vw,38px) !important; }
+  #about .about-visuals { display:block !important; align-self:stretch !important; min-width:0 !important; }
+  #about .about-desk-photo { width:100% !important; max-width:none !important; margin:0 !important; }
+  #about .about-desk-photo img { width:100% !important; height:auto !important; display:block !important; object-fit:contain !important; }
+}
+#about .about-text #about-photo-pair { display:grid !important; position:relative !important; grid-template-columns:repeat(2,minmax(0,1fr)) !important; gap:clamp(12px,1.5vw,24px) !important; padding:0 !important; margin-left:0 !important; margin-right:0 !important; max-width:610px !important; width:100% !important; --photo-gap:0px !important; }
+#about .about-text #about-photo-pair .about-image { margin:0 !important; width:100% !important; transform:none !important; align-self:start !important; }
+#about .about-text #about-photo-pair img { width:100% !important; height:auto !important; display:block !important; object-fit:contain !important; border-radius:6px !important; }
+#about .about-collaboration-statement p { font-size:clamp(23px,2.05vw,32px) !important; line-height:1.35 !important; }
+@media (max-width:800px) {
+  #about .combined-about-grid { display:flex !important; flex-direction:column !important; }
+  #about .about-text { display:flex !important; flex-direction:column !important; }
+  #about .about-text > * { grid-column:auto !important; grid-row:auto !important; }
+  #about .about-text #about-photo-pair { margin-top:24px !important; }
+  #about .about-visuals { width:100% !important; }
+  #about .about-desk-photo { width:100% !important; max-width:none !important; margin:0 !important; }
+  #about .about-collaboration-statement p { font-size:clamp(21px,4.7vw,27px) !important; }
+}
+
+/* About Me: one image on right, full-width centred statement below the entire grid. */
+#about .about-collaboration-statement {
+  width: min(100%, 990px) !important;
+  max-width: 990px !important;
+  margin: clamp(40px, 5vw, 78px) auto 0 !important;
+  text-align: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  grid-column: 1 / -1 !important;
+}
+#about .about-collaboration-statement .about-manifesto-line { margin-left: auto !important; margin-right: auto !important; }
+#about .about-collaboration-statement p { margin: 0 auto !important; text-align: center !important; max-width: 990px !important; }
+
+/* About Me finishing refinements: stronger title and breathing room for the closing statement. */
+#about .about-text > h2 {
+  font-size: clamp(46px, 4.6vw, 66px) !important;
+  line-height: 1.09 !important;
+}
+#about .about-collaboration-statement {
+  margin-top: clamp(54px, 5.8vw, 88px) !important;
+  width: min(100%, 860px) !important;
+  max-width: 860px !important;
+}
+#about .about-collaboration-statement p {
+  max-width: 860px !important;
+}
+@media (max-width: 699px) {
+  #about .about-text > h2 { font-size: clamp(39px, 9.5vw, 48px) !important; }
+  #about .about-collaboration-statement { margin-top: 42px !important; }
+}
+</style>
+<style id="about-editorial-finishing-pass">
+/* Final About Me editorial treatment, scoped strictly to the About section. */
+@media (min-width: 801px) {
+  #about .combined-about-grid {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr) !important;
+    column-gap: clamp(40px, 5.2vw, 92px) !important;
+    align-items: center !important;
+  }
+  #about .about-text {
+    max-width: 660px !important;
+    width: 100% !important;
+    justify-self: start !important;
+  }
+  #about .about-text > p {
+    max-width: 58ch !important;
+    line-height: 1.72 !important;
+  }
+  #about .about-visuals {
+    width: 100% !important;
+    align-self: center !important;
+    justify-self: stretch !important;
+  }
+  #about .about-desk-photo {
+    width: 100% !important;
+    max-width: 610px !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+  #about .about-desk-photo img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    border-radius: 8px !important;
+  }
+}
+#about .about-collaboration-statement {
+  width: min(100%, 1020px) !important;
+  max-width: 1020px !important;
+  margin-top: clamp(58px, 6vw, 100px) !important;
+  padding: 0 clamp(4px, 2vw, 26px) !important;
+}
+#about .about-collaboration-statement p {
+  max-width: 1000px !important;
+  line-height: 1.44 !important;
+}
+#about .about-collaboration-statement .about-manifesto-line {
+  margin-bottom: clamp(22px, 2.2vw, 34px) !important;
+}
+@media (max-width: 800px) {
+  #about .about-collaboration-statement { margin-top: 46px !important; }
+  #about .about-text > p { max-width: 64ch !important; }
+}
+</style>
+<style id="about-biography-refinement">
+/* Editorial hierarchy for the three biography paragraphs only. */
+#about .about-text > p.about-bio-intro {
+  color: #f0efec !important;
+  font-size: clamp(21px, 1.85vw, 27px) !important;
+  font-weight: 500 !important;
+  line-height: 1.49 !important;
+  letter-spacing: -0.035em !important;
+  max-width: 31ch !important;
+  text-shadow: none !important;
+  margin-bottom: 24px !important;
+}
+#about .about-text > p.about-bio-background {
+  color: #bdbdbd !important;
+  font-size: clamp(16px, 1.12vw, 18px) !important;
+  font-weight: 400 !important;
+  line-height: 1.75 !important;
+  letter-spacing: 0 !important;
+  max-width: 59ch !important;
+  text-shadow: none !important;
+  margin-bottom: 28px !important;
+}
+#about .about-text > p.about-bio-directing {
+  color: #d2d2d2 !important;
+  font-size: clamp(16px, 1.13vw, 18px) !important;
+  font-weight: 400 !important;
+  line-height: 1.75 !important;
+  letter-spacing: 0 !important;
+  max-width: 59ch !important;
+  text-shadow: none !important;
+  border-left: 1px solid rgba(244,244,244,.48) !important;
+  padding-left: clamp(18px, 2vw, 26px) !important;
+  margin-left: 0 !important;
+  margin-bottom: 0 !important;
+}
+@media (max-width: 800px) {
+  #about .about-text > p.about-bio-intro {font-size: clamp(20px, 4.8vw, 25px) !important; max-width: 38ch !important;}
+  #about .about-text > p.about-bio-background,
+  #about .about-text > p.about-bio-directing {font-size: 16px !important; max-width: 62ch !important;}
+}
+</style>
+<style id="about-desk-15-percent-reduction">
+/* Only reduce the desk photograph on desktop; preserve ratio and right alignment. */
+@media (min-width: 801px) {
+  #about .about-desk-photo { width: 85% !important; max-width: 518.5px !important; margin-left: auto !important; margin-right: 5% !important; }
+}
+</style>
+<style id="about-heading-raised-only">
+/* Raise only the About Me title; no other content moves. */
+#about .about-text > h2 { position: relative; top: -15px; }
+</style>
+
+<style id="about-concluding-divider-refinement">
+/* Single understated editorial separator replacing the old short accent. */
+#about .about-collaboration-statement .about-manifesto-line {
+  display:block !important;
+  width:min(68%, 850px) !important;
+  height:1px !important;
+  max-width:none !important;
+  background:rgba(245,245,245,.28) !important;
+  margin:0 auto clamp(25px,3.2vw,42px) !important;
+  transition:none !important;
+}
+#about .about-collaboration-statement:hover .about-manifesto-line {
+  width:min(68%, 850px) !important;
+  background:rgba(245,245,245,.28) !important;
+}
+@media (max-width:700px){
+  #about .about-collaboration-statement .about-manifesto-line,
+  #about .about-collaboration-statement:hover .about-manifesto-line {width:78% !important;}
+}
+</style>
+
+<style id="flat-project-page-background">
+/* Match the individual project pages; no simulated lighting layers. */
+body { background: #111111 !important; background-image: none !important; }
+</style>
+<style id="carousel-clean-image-edges">
+/* Remove the large blurred halos from both carousels, including active cards. */
+.work-category .coverflow .project-image,
+.work-category .coverflow .project-card.is-active .project-image {
+  box-shadow: none !important;
+}
+</style>
+
+<style>
+/* Minimal carousel navigation: both Narrative and Commercial & Live Work. */
+.work-category .coverflow-prev,
+.work-category .coverflow-next {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #d9d9d7;
+  font-weight: 400;
+  transition: color 250ms ease, transform 250ms ease !important;
+}
+.work-category .coverflow-prev:hover,
+.work-category .coverflow-next:hover {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: #ffffff;
+}
+.work-category .coverflow-prev:hover { transform: translateX(-4px) !important; }
+.work-category .coverflow-next:hover { transform: translateX(4px) !important; }
+.work-category .coverflow-prev:focus-visible,
+.work-category .coverflow-next:focus-visible {
+  outline: 2px solid #f5f5f0;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .work-category .coverflow-prev:hover,
+  .work-category .coverflow-next:hover { transform: none !important; }
+}
+</style>
+
+<style id="homepage-typography-system-2026">
+/* Typography only: align the homepage with the individual project pages. */
+html body { font-family: "Instrument Sans", Arial, sans-serif; }
+.hero .intro {
+  font-family: "Instrument Sans", Arial, sans-serif !important;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(38px, 4.55vw, 66px);
+  line-height: 1.10;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+#about .about-text > h2,
+#contact .contact-heading h2,
+.contact-section h2,
+.showreels h2 {
+  font-family: "Instrument Sans", Arial, sans-serif !important;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -.04em;
+  line-height: 1.1;
+}
+#about .about-text > h2 { font-size: clamp(42px, 4.6vw, 64px) !important; }
+#about .about-text > p,
+.contact-section p,
+.project-card > p {
+  font-family: "Instrument Sans", Arial, sans-serif !important;
+  font-style: normal;
+  letter-spacing: -.012em;
+  text-shadow: none !important;
+}
+#about .about-text > p { line-height: 1.65 !important; }
+.work-category > h3 .work-heading-link {
+  font-family: "Instrument Sans", Arial, sans-serif !important;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: .055em !important;
+  text-shadow: none !important;
+}
+.work-category > h3 .work-heading-link:hover,
+.work-category > h3 .work-heading-link:focus-visible {
+  letter-spacing: .055em !important;
+  text-shadow: none !important;
+}
+.project-card .project-heading h4 {
+  font-family: "Instrument Sans", Arial, sans-serif !important;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -.025em;
+}
+.project-card .project-type {
+  font-family: "Instrument Sans", Arial, sans-serif !important;
+  font-weight: 400;
+  letter-spacing: -.01em;
+}
+#about .about-manifesto p,
+#about .about-collaboration-statement p {
+  font-family: "Instrument Sans", Arial, sans-serif !important;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: -.025em;
+  text-shadow: none !important;
+}
+@media (max-width: 640px) {
+  .hero .intro {font-size:clamp(34px, 8.4vw, 46px);letter-spacing:-.035em;}
+}
+</style>
+<style id="hero-two-level-typography">
+/* Hero only: same typography family, stronger headline/location hierarchy. */
+.hero .hero-copy { width: min(1100px, 90%); margin-inline: auto; text-align: left; align-self: stretch; }
+.hero .hero-copy .intro {
+  margin: 0;
+  font-family: "Instrument Sans", Arial, sans-serif !important;
+  font-style: italic !important;
+  font-weight: 500 !important;
+  font-size: clamp(35px, 4.65vw, 68px) !important;
+  line-height: 1.09 !important;
+  letter-spacing: -.045em !important;
+  color: #f2f2f0;
+  text-wrap: balance;
+}
+.hero .hero-location {
+  margin: 19px 0 0;
+  font-family: "Instrument Sans", Arial, sans-serif;
+  font-size: clamp(15px, 1.3vw, 18px);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.5;
+  letter-spacing: .008em;
+  color: #a9a9a9;
+}
+@media (max-width: 640px) {
+  .hero .hero-copy { width: 90%; }
+  .hero .hero-location { margin-top: 15px; }
+}
+</style>
+<style id="hero-spacing-refinement">
+/* Keep hero proportions while balancing the space above Narrative Work
+   against the space below the carousel's role caption. */
+.hero {
+  min-height: clamp(175px, 29vh, 255px);
+  padding-top: 28px;
+  padding-bottom: 28px;
+  box-sizing: border-box;
+}
+#work.work-page { padding-top: 60px; }
+@media (max-width: 640px) {
+  .hero { min-height: 175px; padding-top: 26px; padding-bottom: 26px; }
+  #work.work-page { padding-top: 60px; }
+}
+</style>
+<style id="clean-static-header-trial">
+/* Homepage-only trial: hide the moving filmstrip behind an opaque, static header.
+   Keep the original header size, sticky behaviour and navigation unchanged. */
+body #site-header {
+  isolation: isolate;
+  background: #111111 !important;
+  background-image: none !important;
+}
+body #site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: #111111;
+  animation: none !important;
+}
+body #site-header > .header-identity,
+body #site-header > nav {
+  position: relative;
+  z-index: 1;
+}
+</style>
+
+<style id="carousel-inline-arrows-safe">
+/* Keep the project index visible beneath the active project's title and role. */
+.work-category .coverflow { position: relative; }
+.work-category .coverflow-counter {
+  display: block !important;
+  position: absolute !important;
+  top: calc(var(--title-arrow-y, 0px) + 67px) !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  white-space: nowrap;
+  color: #b6b6b6;
+  font-size: 12px;
+  letter-spacing: .15em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  text-align: center;
+}
+.work-category .coverflow-controls {
+  position: absolute !important;
+  inset: 0 auto auto 0 !important;
+  width: 100% !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  z-index: 30;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity .26s ease !important;
+}
+.work-category .coverflow-controls.arrows-changing {
+  opacity: 0;
+}
+.work-category .coverflow-controls.arrows-changing .coverflow-prev,
+.work-category .coverflow-controls.arrows-changing .coverflow-next {
+  pointer-events: none;
+}
+.work-category .coverflow-controls .coverflow-prev,
+.work-category .coverflow-controls .coverflow-next {
+  position: absolute !important;
+  top: var(--title-arrow-y, 0px) !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto;
+  transform: translateY(-50%) !important;
+  transition: color .2s ease !important;
+}
+.work-category .coverflow-controls .coverflow-prev { left: var(--title-arrow-left, 10%) !important; }
+.work-category .coverflow-controls .coverflow-next { left: var(--title-arrow-right, 85%) !important; }
+.work-category .coverflow-controls .coverflow-prev:hover { transform: translate(-4px,-50%) !important; }
+.work-category .coverflow-controls .coverflow-next:hover { transform: translate(4px,-50%) !important; }
+@media (prefers-reduced-motion: reduce) {
+ .work-category .coverflow-controls .coverflow-prev:hover,
+ .work-category .coverflow-controls .coverflow-next:hover { transform: translateY(-50%) !important; }
+}
+</style>
+<script>
+/* Position the arrows around the active title, centred over its full height. */
+(() => {
+  function place(c) {
+    const card = c.querySelector('.project-card.is-active');
+    const heading = card?.querySelector('.project-heading');
+    const title = heading?.querySelector('h4');
+    if (!title) return false;
+
+    const host = c.getBoundingClientRect();
+    // Include every rendered text line, including a wrapped title/type.
+    const textRects = [];
+    const titleRange = document.createRange();
+    titleRange.selectNodeContents(title);
+    textRects.push(...Array.from(titleRange.getClientRects()));
+    const type = heading.querySelector('.project-type');
+    if (type) {
+      const typeRange = document.createRange();
+      typeRange.selectNodeContents(type);
+      textRects.push(...Array.from(typeRange.getClientRects()));
+    }
+    const lines = textRects.filter(r => r.width && r.height);
+    if (!lines.length) return false;
+    const textLeft = Math.min(...lines.map(r => r.left));
+    const textRight = Math.max(...lines.map(r => r.right));
+    const textTop = Math.min(...lines.map(r => r.top));
+    const textBottom = Math.max(...lines.map(r => r.bottom));
+
+    // Keep equal breathing room either side of the current title.
+    const button = 40;
+    const gap = c.getAttribute("aria-label") === "Commercial and live projects" ? 45 : 25;
+    const textWidth = textRight - textLeft;
+    const halfWidth = Math.min(textWidth / 2, Math.max(0, host.width / 2 - button - gap));
+    const centreX = host.width / 2;
+    const left = Math.max(0, centreX - halfWidth - gap - button);
+    const right = Math.min(host.width - button, centreX + halfWidth + gap);
+    // Halfway between the top of line one and bottom of the last line.
+    const y = (textTop + textBottom) / 2 - host.top;
+    c.style.setProperty('--title-arrow-y', y + 'px');
+    c.style.setProperty('--title-arrow-left', left + 'px');
+    c.style.setProperty('--title-arrow-right', right + 'px');
+    return true;
+  }
+  function init() {
+    document.querySelectorAll('.work-category .coverflow').forEach(c => {
+      const stage = c.querySelector('.coverflow-stage');
+      if (!stage) return;
+      let raf = 0;
+      const measure = () => {
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(() => place(c));
+      };
+      const controls = c.querySelector('.coverflow-controls');
+      // The opening card still animates into place after becoming active.
+      // Hide its arrows until the heading has reached its final position.
+      controls?.classList.add('arrows-changing');
+      let initialTimer = setTimeout(() => {
+        place(c);
+        controls?.classList.remove('arrows-changing');
+      }, 850);
+      if (!c.querySelector('.project-card.is-active')) {
+        const observer = new MutationObserver(() => {
+          if (c.querySelector('.project-card.is-active')) {
+            observer.disconnect();
+            clearTimeout(initialTimer);
+            initialTimer = setTimeout(() => {
+              place(c);
+              controls?.classList.remove('arrows-changing');
+            }, 850);
+          }
+        });
+        observer.observe(stage, {subtree:true, attributes:true, attributeFilter:['class']});
+      }
+      // Reposition under cover of the same fade as the changing title.
+      let activeCard = c.querySelector('.project-card.is-active');
+      let settleTimer;
+      const onChange = () => {
+        const nextCard = c.querySelector('.project-card.is-active');
+        if (!nextCard || nextCard === activeCard) return;
+        if (!activeCard) {
+          activeCard = nextCard;
+          return; // first activation is handled by the opening settle timer
+        }
+        activeCard = nextCard;
+        clearTimeout(initialTimer);
+        clearTimeout(settleTimer);
+        controls?.classList.add('arrows-changing');
+        // Wait until fully transparent before changing position; avoids a
+        // visible jump during the fade-out.
+        settleTimer = setTimeout(() => {
+          cancelAnimationFrame(raf);
+          place(c);
+          requestAnimationFrame(() => controls?.classList.remove('arrows-changing'));
+        }, 290);
+      };
+      const activeObserver = new MutationObserver(onChange);
+      activeObserver.observe(stage, {
+        subtree: true, attributes: true, attributeFilter: ['class']
+      });
+      // Resize and loaded fonts can alter line wrapping too.
+      window.addEventListener('resize', measure, {passive:true});
+      document.fonts?.ready.then(measure);
+    });
+  }
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', init, {once:true});
+  else init();
+})();
+</script>
+<style id="carousel-title-line-position-fix">
+/* Lower the title/role group beneath each image. */
+.work-category .project-card .project-heading { margin-top: 22px !important; }
+</style>
+<style id="minimal-about-and-balanced-bottom-sections">
+/* Understated biography between the work gallery and contact. */
+html body#top .top-introduction,
+html body#top #contact.contact-section {
+  box-sizing: border-box !important;
+  padding-left: clamp(24px, 5vw, 90px) !important;
+  padding-right: clamp(24px, 5vw, 90px) !important;
+}
+html body#top .top-introduction {
+  border-top: 1px solid rgba(245,245,240,.22);
+  padding-top: clamp(52px, 5vw, 76px) !important;
+  padding-bottom: clamp(64px, 7vw, 102px) !important;
+}
+html body#top .top-introduction-inner {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+html body#top .top-introduction-inner p {
+  margin: 0 !important;
+  font-family: 'IBM Plex Sans', Arial, sans-serif !important;
+  font-weight: 400 !important;
+  text-align: left !important;
+  text-wrap: pretty;
+}
+html body#top .top-introduction-lead {
+  max-width: 760px;
+  color: #f2f2ef !important;
+  font-size: clamp(22px, 2.2vw, 32px) !important;
+  line-height: 1.35 !important;
+  letter-spacing: -.025em !important;
+}
+html body#top .top-introduction-inner p.top-introduction-secondary {
+  max-width: 720px;
+  margin-top: clamp(18px, 2vw, 28px) !important;
+  color: #b9b9b7 !important;
+  font-size: clamp(16px, 1.3vw, 19px) !important;
+  line-height: 1.55 !important;
+  letter-spacing: -.01em !important;
+}
+html body#top #work.work-page {
+  --work-switch-gap: 80px;
+  padding-top: var(--work-switch-gap) !important;
+  padding-bottom: clamp(42px, 5vw, 66px) !important;
+}
+html body#top #work .work-category-switch {
+  margin-bottom: var(--work-switch-gap) !important;
+}
+html body#top #contact .contact-grid {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+@media (min-width: 801px) {
+  html body#top #contact .contact-grid {
+    max-width: 1080px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    column-gap: clamp(56px, 8vw, 140px) !important;
+    align-items: start !important;
+  }
+  html body#top #contact .contact-heading {
+    left: auto !important;
+    right: auto !important;
+    margin: 0 !important;
+  }
+  html body#top #contact .contact-details {
+    position: relative !important;
+    left: clamp(0px, calc(15vw - 135px), 105px) !important;
+    right: auto !important;
+    justify-self: end !important;
+    width: min(100%, 470px) !important;
+    margin: 0 !important;
+  }
+}
+@media (max-width: 800px) {
+  html body#top .top-introduction { padding-top: 46px !important; padding-bottom: 64px !important; }
+  html body#top #work.work-page { --work-switch-gap: 60px; }
+}
+</style>
+<style id="contact-and-project-title-typography-refinement">
+/* The film names carry the expressive type; category and role labels stay mono. */
+html body#top #work .editorial-grid .project-heading h4 {
+  font-family: 'Instrument Sans', Arial, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  letter-spacing: -.8px !important;
+  text-shadow: 0 1px 8px rgba(0,0,0,.8) !important;
+}
+/* Give the final contact area the same restrained editorial sans-serif voice. */
+html body#top #contact .contact-heading h2 {
+  font-family: 'Instrument Sans', 'IBM Plex Sans', Arial, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  letter-spacing: -.045em !important;
+  line-height: 1.08 !important;
+}
+html body#top #contact .contact-heading .contact-availability,
+html body#top #contact .contact-details > .contact-intro {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace !important;
+  font-size: clamp(15px, 1.3vw, 18px) !important;
+  font-weight: 400 !important;
+  line-height: 1.6 !important;
+  letter-spacing: -.01em !important;
+}
+html body#top #contact .contact-heading .contact-availability {
+  max-width: 560px !important;
+  margin-bottom: 0 !important;
+}
+html body#top #contact .contact-heading .contact-availability + .contact-availability {
+  margin-top: 18px !important;
+  color: #b9b9b7 !important;
+}
+html body#top #contact .contact-links a {
+  font-family: 'Instrument Sans', 'IBM Plex Sans', Arial, sans-serif !important;
+  font-size: clamp(20px, 2.1vw, 27px) !important;
+  font-weight: 500 !important;
+  letter-spacing: -.035em !important;
+  line-height: 1.25 !important;
+}
+</style>
+</head>
+<body id="top">
+<!-- HEADER -->
+<header class="site-header" id="site-header">
+<div class="header-identity">
+<h1>Sonny Allt-Wilson</h1>
+<p class="role">Editor</p>
+</div>
+<nav aria-label="Main navigation">
+<a class="home-link" href="#top">Home</a>
+<a class="work-nav-top" href="#work">My Work</a>
+<a href="#contact">Contact</a>
+</nav>
+</header>
+<main>
+<!-- MY WORK -->
+<section class="work-page" id="work">
+<div class="work-category-switch" role="group" aria-label="Choose work category">
+<button class="work-switch-button is-selected" type="button" data-show-work="narrative" aria-pressed="true" aria-controls="narrative-work">Narrative Work</button>
+<button class="work-switch-button" type="button" data-show-work="commercial" aria-pressed="false" aria-controls="commercial-work">Commercial &amp; Live Work</button>
+</div>
+<!-- NARRATIVE -->
+<section class="work-category" id="narrative-work" data-work-panel="narrative">
+<h3>
+<a class="work-heading-link" data-work-landing="narrative" href="#work">NARRATIVE WORK<span aria-hidden="true" class="work-heading-rule"></span></a>
+</h3>
+<div aria-label="Narrative projects" class="editorial-gallery">
+<div class="editorial-grid">
+<a class="project-card" href="projects/crazy-fxcking-dancing-lady.html">
+<div class="project-image"><img alt="Still from Crazy F***ing Dancing Lady" decoding="async" loading="eager" src="images/projects/ellen bruh.png"/></div>
+<div class="project-heading">
+<h4>Crazy F***ing Dancing Lady</h4>
+<span class="project-type">Short Film</span>
+</div>
+<p>Editor / Director</p>
+</a>
+<a class="project-card" href="projects/last-man-standing.html">
+<div class="project-image">
+<img alt="Still from Last Man Standing" src="images/projects/about to pull.png"/>
+</div>
+<div class="project-heading">
+<h4>Last Man Standing</h4>
+<span class="project-type">Short Film</span>
+</div>
+<p>Editor / Writer-Director</p>
+</a>
+<a class="project-card" href="projects/under-my-breath.html">
+<div class="project-image"><img alt="Still from Under My Breath" decoding="async" loading="eager" src="images/projects/shadow.png"/></div>
+<div class="project-heading">
+<h4>Under My Breath</h4>
+<span class="project-type">Short Film</span>
+</div>
+<p>Writer-Director / Assistant Editor</p>
+</a>
+<a class="project-card" href="projects/modern-love.html">
+<div class="project-image"><img alt="Still from Modern Love" decoding="async" loading="eager" src="images/projects/hell no.png"/></div>
+<div class="project-heading">
+<h4>Modern Love</h4>
+<span class="project-type">Short Film</span>
+</div>
+<p>Editor / Writer-Director</p>
+</a>
+<a class="project-card" href="projects/frank-wakes-up.html">
+<div class="project-image"><img alt="Still from Frank Wakes Up" decoding="async" loading="eager" src="images/projects/corner.png"/></div>
+<div class="project-heading">
+<h4>Frank Wakes Up</h4>
+<span class="project-type">Short Film</span>
+</div>
+<p>Editor</p>
+</a>
+</div>
+</div>
+</section>
+<!-- COMMERCIAL AND LIVE -->
+<section class="work-category" id="commercial-work" data-work-panel="commercial" hidden>
+<h3>
+<a class="work-heading-link" data-work-landing="commercial" href="#commercial-work">COMMERCIAL &amp; LIVE WORK<span aria-hidden="true" class="work-heading-rule"></span></a>
+</h3>
+<div aria-label="Commercial and live projects" class="editorial-gallery">
+<div class="editorial-grid">
+<a class="project-card" href="projects/down-to-the-felt.html">
+<div class="project-image"><img alt="Still from Down to the Felt" decoding="async" loading="eager" src="images/projects/dttf 6.png"/></div>
+<div class="project-heading">
+<h4>Down to the Felt</h4>
+<span class="project-type">
+                            Live Theatre Multi-Camera Production
+                        </span>
+</div>
+<p>Editor / Producer</p>
+</a>
+<a class="project-card" href="projects/ave-maria.html">
+<div class="project-image"><img alt="Still from Ave Maria" decoding="async" loading="eager" src="images/projects/ava maria 4.png"/></div>
+<div class="project-heading">
+<h4>Ave Maria</h4>
+<span class="project-type">
+                            Live Theatre Multi-Camera Production
+                        </span>
+</div>
+<p>Editor / Producer</p>
+</a>
+<a class="project-card" href="projects/shouldve-said-something.html">
+<div class="project-image"><img alt="Still from Should've Said Something" decoding="async" loading="eager" src="images/projects/soss 5.png"/></div>
+<div class="project-heading">
+<h4>Should've Said Something</h4>
+<span class="project-type">Music Video</span>
+</div>
+<p>Producer</p>
+</a>
+<a class="project-card" href="projects/live-at-the-exchange.html">
+<div class="project-image"><img alt="Still from Live at the Exchange" decoding="async" loading="eager" src="images/projects/nth 2.png"/></div>
+<div class="project-heading">
+<h4>Live at the Exchange</h4>
+<span class="project-type">
+                            Live Music Multi-Camera Production
+                        </span>
+</div>
+<p>Editor / Producer</p>
+</a>
+<a class="project-card" href="projects/live-at-the-bristol-fringe.html">
+<div class="project-image"><img alt="Still from Live at the Bristol Fringe" decoding="async" loading="eager" src="images/projects/fringe 1.png"/></div>
+<div class="project-heading">
+<h4>Live at the Bristol Fringe</h4>
+<span class="project-type">
+                            Live Music Multi-Camera Production
+                        </span>
+</div>
+<p>Editor / Director-Producer</p>
+</a>
+</div>
+</div>
+</section>
+</section>
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+<div class="contact-grid">
+<div class="contact-heading reveal" data-reveal="left">
+<h2>Get in Contact</h2>
+<p class="contact-intro contact-availability">London / Brighton-based editor with experience across narrative film, music videos and live performance.</p>
+<p class="contact-intro contact-availability">Currently available for freelance editing projects, while also seeking opportunities to further develop my craft within a professional post-production environment.</p>
+</div>
+<div class="contact-details reveal" data-delay="1" data-reveal="right">
+<p class="contact-intro">
+                Interested in working together?
+            </p>
+<div class="contact-links">
+<a href="mailto:Sonnyalltwilson@gmail.com">
+                    Sonnyalltwilson@gmail.com
+                </a>
+<a href="tel:+447487642256">
+                    07487 642256
+                </a>
+</div>
+</div>
+</div>
+</section>
+</main>
+<footer>
+<p>© Sonny Allt-Wilson</p>
+<p>Based in London &amp; Brighton</p>
+</footer>
+<script defer="" src="js/home.js"></script>
+<script>
+(function () {
+
+    /* CINEMA SEATS */
+
+    const seating = document.getElementById('cinema-seating');
+
+    if (seating) {
+        const rows = [
+            ['cinema-seat-row-back', 13],
+            ['cinema-seat-row-back-mid', 12],
+            ['cinema-seat-row-mid', 11],
+            ['cinema-seat-row-front-mid', 10],
+            ['cinema-seat-row-front', 9]
+        ];
+
+        rows.forEach(function (settings) {
+            const row = document.createElement('div');
+            row.className = 'cinema-seat-row ' + settings[0];
+
+            for (let i = 0; i < settings[1]; i++) {
+                const seat = document.createElement('span');
+                seat.className = 'cinema-seat';
+                row.appendChild(seat);
+            }
+
+            seating.appendChild(row);
+        });
+    }
+
+    /* SHOWREEL SWITCHER */
+
+    const reels = [
+        {
+            title: 'Narrative Work',
+            screenTitle: 'Narrative Showreel',
+            src: ''
+        },
+        {
+            title: 'Commercial & Live',
+            screenTitle: 'Commercial & Live Showreel',
+            src: ''
+        }
+    ];
+
+    const title = document.getElementById('cinema-current-title');
+    const video = document.getElementById('cinema-video');
+    const placeholder = document.getElementById('cinema-placeholder');
+    const placeholderTitle =
+        document.getElementById('cinema-placeholder-title');
+    const previous = document.getElementById('cinema-prev');
+    const next = document.getElementById('cinema-next');
+
+    if (
+        title &&
+        video &&
+        placeholder &&
+        placeholderTitle &&
+        previous &&
+        next
+    ) {
+        let current = 0;
+
+        function showReel(index) {
+            current = (index + reels.length) % reels.length;
+
+            const selected = reels[current];
+
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+
+            title.textContent = selected.title;
+            placeholderTitle.textContent = selected.screenTitle;
+
+            if (selected.src) {
+                video.src = selected.src;
+                video.hidden = false;
+                placeholder.hidden = true;
+                video.load();
+            } else {
+                video.hidden = true;
+                placeholder.hidden = false;
+            }
+        }
+
+        previous.addEventListener('click', function () {
+            showReel(current - 1);
+        });
+
+        next.addEventListener('click', function () {
+            showReel(current + 1);
+        });
+
+        video.addEventListener('error', function () {
+            video.hidden = true;
+            placeholder.hidden = false;
+        });
+
+        showReel(0);
+    }
+
+    /* ABOUT ALIGNMENT */
+
+    const cinemaSection = document.getElementById('showreels');
+
+    const taglineText = document.querySelector('#about-tagline p');
+
+    const frontRow = document.querySelector(
+        '.cinema-seat-row-front'
+    );
+
+    const biography = document.querySelector(
+        '#about .about-text'
+    );
+
+    const bottomParagraphs = biography
+        ? biography.querySelectorAll(':scope > p')
+        : [];
+
+    const photoPair = document.getElementById(
+        'about-photo-pair'
+    );
+
+    const leftPhoto = document.querySelector(
+        '#about .about-image-two'
+    );
+
+    const rightPhoto = document.querySelector(
+        '#about .about-image-one'
+    );
+
+    /*
+       Measure positions without temporary scroll-reveal translation.
+       Otherwise the cinema can jump when its 1.6s reveal finishes.
+    */
+    function stableVerticalBounds(element) {
+        const bounds = element.getBoundingClientRect();
+        let revealShift = 0;
+        let current = element;
+
+        while (current && current.nodeType === 1) {
+            if (current.classList.contains('reveal')) {
+                const transform = window.getComputedStyle(current).transform;
+                if (transform && transform !== 'none') {
+                    const matrix = new DOMMatrixReadOnly(transform);
+                    revealShift += matrix.m42;
+                }
+            }
+            current = current.parentElement;
+        }
+
+        return {
+            top: bounds.top - revealShift,
+            bottom: bounds.bottom - revealShift
+        };
+    }
+
+    function updateAboutLayout() {
+
+        if (
+            !cinemaSection ||
+            !taglineText ||
+            !frontRow ||
+            bottomParagraphs.length < 2 ||
+            !photoPair ||
+            !leftPhoto ||
+            !rightPhoto
+        ) {
+            return;
+        }
+
+        /* RESET ON MOBILE */
+
+        if (window.matchMedia('(max-width: 800px)').matches) {
+            cinemaSection.style.removeProperty('--cinema-shift');
+            photoPair.style.removeProperty('--photo-gap');
+            return;
+        }
+
+        /*
+           CINEMA ALIGNMENT
+
+           Align bottom of front-row seats
+           to the bottom of the italic tagline.
+        */
+
+        cinemaSection.style.setProperty(
+            '--cinema-shift',
+            '0px'
+        );
+
+        const taglineBottom =
+            stableVerticalBounds(taglineText).bottom;
+
+        const seatBottom =
+            stableVerticalBounds(frontRow).bottom;
+
+        cinemaSection.style.setProperty(
+            '--cinema-shift',
+            (taglineBottom - seatBottom).toFixed(2) + 'px'
+        );
+
+        /*
+           PHOTOGRAPH ALIGNMENT
+
+           Use ONLY the final two paragraphs,
+           not the complete biography.
+        */
+
+        const firstBottomParagraph =
+            bottomParagraphs[bottomParagraphs.length - 2];
+
+        const lastBottomParagraph =
+            bottomParagraphs[bottomParagraphs.length - 1];
+
+        const textTop =
+            stableVerticalBounds(firstBottomParagraph).top;
+
+        const textBottom =
+            stableVerticalBounds(lastBottomParagraph).bottom;
+
+        const targetCentre =
+            (textTop + textBottom) / 2;
+
+        /*
+           Measure the full staggered photo pair.
+        */
+
+        photoPair.style.setProperty(
+            '--photo-gap',
+            '0px'
+        );
+
+        const leftBox =
+            stableVerticalBounds(leftPhoto);
+
+        const rightBox =
+            stableVerticalBounds(rightPhoto);
+
+        const photoTop = Math.min(
+            leftBox.top,
+            rightBox.top
+        );
+
+        const photoBottom = Math.max(
+            leftBox.bottom,
+            rightBox.bottom
+        );
+
+        const photoCentre =
+            (photoTop + photoBottom) / 2;
+
+        /*
+           Maintain at least 40px between
+           cinema section and photographs.
+        */
+
+        const minimumGap = 40;
+
+        const desiredGap =
+            targetCentre - photoCentre + 237.5;
+
+        /* Apply this additional movement after the alignment calculation,
+           so a minimum-gap clamp cannot swallow the requested 80px. */
+        const extraPhotoDrop = 80;
+
+        photoPair.style.setProperty(
+            '--photo-gap',
+            (Math.max(minimumGap, desiredGap) + extraPhotoDrop).toFixed(2) + 'px'
+        );
+    }
+
+    /* UPDATE SCHEDULING */
+
+    let pendingLayout = 0;
+
+    function scheduleAboutLayout() {
+        cancelAnimationFrame(pendingLayout);
+
+        pendingLayout = requestAnimationFrame(
+            updateAboutLayout
+        );
+    }
+
+    /*
+       Scroll-reveal animations only alter visual transforms, not layout.
+       Avoid recalculating alignment as each reveal starts or ends.
+    */
+
+    /* PAGE LOAD */
+
+    window.addEventListener('load', function () {
+        scheduleAboutLayout();
+
+        setTimeout(
+            scheduleAboutLayout,
+            2200
+        );
+    });
+
+    /* WINDOW RESIZING */
+
+    window.addEventListener(
+        'resize',
+        scheduleAboutLayout
+    );
+
+    /* FONTS */
+
+    if (document.fonts) {
+        document.fonts.ready.then(
+            scheduleAboutLayout
+        );
+    }
+
+    /* PHOTOGRAPH LOADING */
+
+    if (photoPair) {
+        photoPair
+            .querySelectorAll('img')
+            .forEach(function (img) {
+                img.addEventListener(
+                    'load',
+                    scheduleAboutLayout
+                );
+            });
+    }
+
+    /* BIOGRAPHY HEIGHT CHANGES */
+
+    if (
+        biography &&
+        'ResizeObserver' in window
+    ) {
+        const biographyObserver =
+            new ResizeObserver(
+                scheduleAboutLayout
+            );
+
+        biographyObserver.observe(
+            biography
+        );
+    }
+
+})();
+</script>
+<script>
+/* Save the real homepage in browser history for an instant return (BFCache). */
+(function () {
+  try { history.replaceState(Object.assign({}, history.state || {}, {portfolioHomepage:true}), '', location.href); } catch (_) {}
+  document.querySelectorAll('a.project-card[href^="projects/"]').forEach(function (link) {
+    link.addEventListener('click', function () {
+      try { sessionStorage.setItem('portfolioCameFromHome', String(Date.now())); } catch (_) {}
+    });
+  });
+})();
+</script>
+<script>
+/* First paint: reveal header and BOTH carousels together, fully positioned.
+   There is no entrance fade or card translation. The normal 3D navigation remains. */
+(function () {
+  function begin() {
+    const carousels = Array.from(document.querySelectorAll('.work-category .coverflow'));
+    // Every carousel image, not only the centre card, so later navigation is seamless.
+    const images = Array.from(document.images);
+    images.forEach(img => { img.loading = 'eager'; });
+    function awaitImage(img) {
+      if (img.complete) return img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+      return new Promise(resolve => {
+        img.addEventListener('load', resolve, {once:true});
+        img.addEventListener('error', resolve, {once:true});
+      }).then(() => img.decode ? img.decode().catch(() => {}) : undefined);
+    }
+    const ready = Promise.all([
+      ...images.map(awaitImage),
+      document.fonts && document.fonts.ready ? document.fonts.ready.catch(() => {}) : Promise.resolve()
+    ]);
+    let finished = false;
+    let revealed = false;
+    let leaving = false;
+    const root = document.documentElement;
+    // Never hide an already-visible homepage during pagehide. Browsers may
+    // freeze it in the back/forward cache and restore that exact hidden frame.
+    window.addEventListener('pageshow', event => {
+      if (event.persisted) {
+        root.classList.add('returning-from-project');
+        root.classList.remove('portfolio-initializing', 'portfolio-curtain-fading');
+        root.classList.add('portfolio-page-fade-in');
+        carousels.forEach(c => c.classList.add('portfolio-images-ready', 'is-visible'));
+        revealed = true;
+      }
+      leaving = false;
+    });
+    function reveal(force) {
+      if (leaving || revealed || !finished) return;
+      // Returning from a project also needs its previous carousel position restored.
+      if (!force && root.classList.contains('returning-from-project') && !root.classList.contains('home-return-ready')) return;
+      revealed = true;
+      // Preserve opacity:0 for a rendered frame, then transition to opacity:1.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        root.classList.add('portfolio-page-fade-in');
+        // The quick return curtain has already faded; never restart it.
+        if (!root.classList.contains('returning-from-project')) root.classList.add('portfolio-curtain-fading');
+        root.classList.remove('portfolio-initializing');
+        // Remove the completed curtain so it never intercepts later navigation.
+        setTimeout(() => root.classList.remove('portfolio-curtain-fading'), 1250);
+      }));
+      setTimeout(() => root.classList.remove('portfolio-static-entry'), 1100);
+    }
+    window.portfolioTryRevealHomepage = () => reveal(false);
+    // On a fresh return (not BFCache), never hold a black screen indefinitely
+    // if a carousel image or return-position calculation stalls.
+    if (root.classList.contains('returning-from-project')) {
+      setTimeout(() => {
+        if (revealed) return;
+        finished = true;
+        carousels.forEach(c => c.classList.add('portfolio-images-ready', 'is-visible'));
+        root.classList.add('home-return-ready');
+        reveal(true);
+      }, 2200);
+    }
+    const returnObserver = new MutationObserver(() => reveal(false));
+    returnObserver.observe(root, {attributes:true, attributeFilter:['class']});
+    // An unexpected failure in the carousel controller must not leave a black page.
+    setTimeout(() => { if (!finished) show(); reveal(true); returnObserver.disconnect(); }, 10000);
+    function show() {
+      if (finished) return;
+      finished = true;
+      carousels.forEach(c => c.classList.add('portfolio-images-ready','is-visible'));
+      // All layout writes finish before the visible paint.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        reveal(false);
+      }));
+    }
+    // Avoid hanging forever if an image/remote font fails to respond.
+    const fallback = setTimeout(show, 9000);
+    ready.then(() => {
+      function stable() {
+        if (carousels.some(c => !c.querySelector('.coverflow-stage')?.classList.contains('portfolio-carousel-ready'))) {
+          requestAnimationFrame(stable); return;
+        }
+        clearTimeout(fallback);
+        show();
+      }
+      stable();
+    }).catch(show);
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', begin, {once:true});
+  else begin();
+})();
+</script>
+<script>
+/* Switch between the two editorial galleries without navigating or scrolling. */
+(function () {
+  const controls = Array.from(document.querySelectorAll('[data-show-work]'));
+  const panels = Array.from(document.querySelectorAll('[data-work-panel]'));
+  if (!controls.length || !panels.length) return;
+  controls.forEach(button => button.addEventListener('click', () => {
+    const selected = button.dataset.showWork;
+    if (button.getAttribute('aria-pressed') === 'true') return;
+    controls.forEach(control => {
+      const active = control.dataset.showWork === selected;
+      control.classList.toggle('is-selected', active);
+      control.setAttribute('aria-pressed', String(active));
+    });
+    panels.forEach(panel => {
+      const active = panel.dataset.workPanel === selected;
+      panel.hidden = !active;
+      panel.classList.remove('work-panel-entering');
+      if (active) {
+        void panel.offsetWidth;
+        panel.classList.add('work-panel-entering');
+      }
+    });
+  }));
+})();
+</script>
+
+<script defer src="js/contact-editor.js"></script>
+</body>
+</html>

@@ -1,0 +1,990 @@
+
+/* -------------------------------- */
+/* PROJECT PAGE FONT */
+/* -------------------------------- */
+
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;1,500&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+/* -------------------------------- */
+/* INDIVIDUAL PROJECT PAGES */
+/* -------------------------------- */
+
+.project-page {
+    font-family: "Instrument Sans", Arial, sans-serif;
+
+    /*
+       Default video label for every project.
+
+       Individual projects can override this
+       through their own HTML body element.
+    */
+    --video-label: "Video label";
+}
+
+/* -------------------------------- */
+/* MAIN PROJECT LAYOUT */
+/* -------------------------------- */
+
+.project-main {
+    min-height: 75vh;
+}
+
+.project-inner {
+    width: min(1100px, 90%);
+    margin: 0 auto;
+    padding: 34px 0 65px;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    column-gap: 65px;
+    align-items: start;
+}
+
+/* -------------------------------- */
+/* BACK TO MY WORK */
+/* -------------------------------- */
+
+.project-back {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    color: #b9b9b9;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 14px;
+    border-bottom: 1px solid #555;
+    padding-bottom: 5px;
+
+    transition:
+        color 0.3s ease,
+        border-color 0.3s ease;
+}
+
+.project-back:hover {
+    color: #fff;
+    border-color: #fff;
+}
+
+/* Top back link spans both columns */
+
+.project-inner > .project-back {
+    grid-column: 1 / -1;
+    margin-bottom: 30px;
+}
+
+/* -------------------------------- */
+/* PROJECT INTRODUCTION — LEFT */
+/* -------------------------------- */
+
+.project-intro {
+    grid-column: 1;
+    grid-row: 2;
+
+    padding: 0 0 43px;
+    border-bottom: none;
+    min-height: 285px;
+}
+
+.project-kicker {
+    color: #999;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 1.4px;
+    margin-bottom: 14px;
+}
+
+.project-intro h2 {
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: clamp(42px, 4.8vw, 68px);
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: -2px;
+    line-height: 1.02;
+    max-width: 1000px;
+    text-wrap: balance;
+}
+
+.project-credit {
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 19px;
+    color: #bbb;
+    margin-top: 20px;
+}
+
+/* -------------------------------- */
+/* PROJECT DESCRIPTION — RIGHT */
+/* -------------------------------- */
+
+.project-description {
+    grid-column: 2;
+    grid-row: 2;
+
+    display: block;
+    padding: 5px 0 43px;
+    border-bottom: none;
+    min-width: 0;
+    min-height: 285px;
+}
+
+/* Remove redundant About the project heading */
+
+.project-description > h3 {
+    display: none;
+}
+
+.project-prose p {
+    color: #c8c8c8;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 19px;
+    line-height: 1.65;
+    max-width: 670px;
+    margin-bottom: 18px;
+}
+
+.project-prose p:last-child {
+    margin-bottom: 0;
+}
+
+.project-prose strong {
+    font-weight: 500;
+    color: #e2e2e2;
+}
+
+/* -------------------------------- */
+/* VIDEO — DIRECTLY BELOW */
+/* -------------------------------- */
+
+.project-video-section {
+    grid-column: 1 / -1;
+    grid-row: 3;
+
+    padding: 32px 0 45px;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+}
+
+/*
+   Hide the existing heading and description.
+
+   This avoids displaying:
+   - Watch the film
+   - Film / selected scenes / trailer
+*/
+
+.project-video-section .project-section-heading {
+    display: none;
+}
+
+/*
+   Single editable label.
+
+   Default: Video label
+   Example alternatives:
+   Official Trailer
+   Selected Scene
+   Opening Sequence
+*/
+
+.project-video-section::before {
+    content: var(--video-label);
+    display: block;
+
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    letter-spacing: 0.4px;
+    line-height: 1.5;
+
+    color: #b9b9b9;
+    margin-bottom: 19px;
+}
+
+/* Main video frame */
+
+.project-video-frame {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #232323;
+
+    box-shadow:
+        0 18px 48px rgba(0, 0, 0, 0.35);
+}
+
+.project-video-frame video,
+.project-video-frame iframe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    border: 0;
+}
+
+/* -------------------------------- */
+/* VIDEO PLACEHOLDER */
+/* -------------------------------- */
+
+.project-video-placeholder {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    color: #d3d3d3;
+    font-family: "Instrument Sans", Arial, sans-serif;
+}
+
+/* Keep the play symbol */
+
+.project-video-placeholder .video-play {
+    font-size: 42px;
+    margin-bottom: 0;
+}
+
+/* Hide additional placeholder text */
+
+.project-video-placeholder strong,
+.project-video-placeholder small {
+    display: none;
+}
+
+/* -------------------------------- */
+/* GALLERY — NO SECTION HEADING */
+/* -------------------------------- */
+
+.project-gallery-section {
+    grid-column: 1 / -1;
+    grid-row: 4;
+
+    padding: 45px 0;
+    border-bottom: 1px solid #333;
+}
+
+/* Remove Film stills and its subheading */
+
+.project-gallery-section .project-section-heading {
+    display: none;
+}
+
+.film-gallery {
+    width: 100%;
+}
+
+.gallery-viewport {
+    overflow: hidden;
+    border-radius: 6px;
+    outline: none;
+    touch-action: pan-y;
+}
+
+.gallery-viewport:focus-visible {
+    outline: 1px solid #aaa;
+    outline-offset: 4px;
+}
+
+.gallery-track {
+    display: flex;
+
+    transition:
+        transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+
+    will-change: transform;
+}
+
+.gallery-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #232323;
+    overflow: hidden;
+}
+
+.gallery-slide img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+}
+
+/* -------------------------------- */
+/* STILL IMAGE PLACEHOLDERS */
+/* -------------------------------- */
+
+.still-placeholder {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    color: #b4b4b4;
+    font-family: "Instrument Sans", Arial, sans-serif;
+}
+
+.still-placeholder span {
+    font-size: clamp(17px, 2.5vw, 26px);
+    letter-spacing: 2px;
+}
+
+.still-placeholder small {
+    color: #828282;
+    text-align: center;
+    padding: 0 15px;
+}
+
+/* -------------------------------- */
+/* GALLERY CONTROLS */
+/* -------------------------------- */
+
+.gallery-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    margin-top: 24px;
+}
+
+.gallery-prev,
+.gallery-next {
+    width: 48px;
+    height: 48px;
+
+    border: 1px solid #555;
+    border-radius: 50%;
+    background: transparent;
+    color: #f5f5f0;
+
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 23px;
+    cursor: pointer;
+
+    transition:
+        background 0.3s ease,
+        border-color 0.3s ease;
+}
+
+.gallery-prev:hover,
+.gallery-next:hover {
+    background: #292929;
+    border-color: #fff;
+}
+
+.gallery-prev:focus-visible,
+.gallery-next:focus-visible {
+    outline: 2px solid #f5f5f0;
+    outline-offset: 4px;
+}
+
+.gallery-counter {
+    min-width: 80px;
+    text-align: center;
+    color: #999;
+
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+}
+
+/* -------------------------------- */
+/* BOTTOM NAVIGATION */
+/* -------------------------------- */
+
+.project-bottom {
+    grid-column: 1 / -1;
+    grid-row: 5;
+    padding-top: 32px;
+}
+
+/* -------------------------------- */
+/* MOBILE */
+/* -------------------------------- */
+
+@media (max-width: 800px) {
+
+    .project-inner {
+        grid-template-columns: minmax(0, 1fr);
+        column-gap: 0;
+        padding: 28px 0 65px;
+    }
+
+    .project-inner > .project-back {
+        grid-column: 1;
+        grid-row: 1;
+        margin-bottom: 28px;
+    }
+
+    .project-intro {
+        grid-column: 1;
+        grid-row: 2;
+        padding: 0 0 24px;
+        min-height: 0;
+    }
+
+    .project-intro h2 {
+        letter-spacing: -1px;
+    }
+
+    .project-credit {
+        margin-top: 14px;
+    }
+
+    .project-description {
+        grid-column: 1;
+        grid-row: 3;
+
+        padding: 0 0 30px;
+        min-height: 0;
+    }
+
+    .project-prose p {
+        font-size: 17px;
+    }
+
+    .project-video-section {
+        grid-column: 1;
+        grid-row: 4;
+
+        padding: 28px 0 38px;
+    }
+
+    .project-gallery-section {
+        grid-column: 1;
+        grid-row: 5;
+
+        padding: 38px 0;
+    }
+
+    .project-bottom {
+        grid-column: 1;
+        grid-row: 6;
+
+        padding-top: 32px;
+    }
+
+    .gallery-prev,
+    .gallery-next {
+        width: 42px;
+        height: 42px;
+    }
+}
+
+/* -------------------------------- */
+/* REDUCED MOTION ACCESSIBILITY */
+/* -------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .gallery-track {
+        transition: none;
+    }
+}
+
+/* Cinema-only refinements: project introduction typography and layout above are unchanged. */
+.project-page .project-video-section {
+    padding: 18px 0 12px;
+    border-bottom: 0;
+    scroll-margin-top: 82px;
+}
+/* Suppress the old automatically inserted "Video label". */
+.project-page .project-video-section::before { content: none; display: none; }
+.project-page .project-intro .project-watch-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: #dededb;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,.52);
+    padding-bottom: 5px;
+    transition: color .2s ease, border-color .2s ease;
+}
+.project-page .project-watch-link:hover,
+.project-page .project-watch-link:focus-visible { color: #fff; border-color: #fff; }
+.project-page .project-watch-link svg { height: 16px; width: 16px; transition: transform .2s ease; }
+.project-page .project-watch-link:hover svg { transform: translateY(3px); }
+@media (prefers-reduced-motion: no-preference) { html:has(.project-watch-link) { scroll-behavior: smooth; } }
+.project-page .project-cinema {
+    position: relative;
+    isolation: isolate;
+    box-sizing: border-box;
+    /* Keep the entire screen, gap and seats inside a typical viewport. */
+    width: min(100%, 780px, max(280px, calc((100svh - 230px) * 1.54)));
+    margin: 0 auto;
+    padding: 0 0 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: visible;
+}
+.project-page .project-cinema-floor {
+    position: absolute;
+    z-index: 0;
+    inset: auto -7% 0;
+    height: 38%;
+    background: radial-gradient(ellipse at 50% 0%, rgba(210,210,210,.04), transparent 70%);
+    pointer-events: none;
+}
+.project-page .project-cinema-screen {
+    position: relative;
+    z-index: 1;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 5px;
+    border: 1px solid rgba(244,244,241,.55);
+    background: #111;
+    box-shadow: 0 2px 35px rgba(0,0,0,.4), 0 0 0 7px rgba(255,255,255,.015);
+    transform: perspective(1500px) rotateX(-.8deg);
+}
+.project-page .project-cinema-screen .project-video-frame {
+    width: 100%;
+    aspect-ratio: 16 / 8.6;
+    border-radius: 0;
+    box-shadow: none;
+    background: radial-gradient(ellipse at 50% 45%,#222 0%,#1a1a1a 55%,#141414 100%);
+}
+.project-page .project-cinema-screen video,
+.project-page .project-cinema-screen iframe { width: 100%; height: 100%; object-fit: contain; }
+.project-page .project-cinema-seating {
+    position: relative;
+    flex: none;
+    z-index: 3;
+    pointer-events: none;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    height: clamp(95px, 14vw, 136px);
+    margin-top: clamp(40px, 6vh, 64px);
+    transform: none;
+}
+.project-page .project-cinema-seat-row {
+    position: absolute;
+    left: -3%;
+    width: 106%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1px;
+}
+.project-page .project-cinema-seat {
+    display: block;
+    box-sizing: border-box;
+    flex: 1 1 0;
+    min-width: 0;
+    height: clamp(48px, 7vw, 74px);
+    background: #111;
+    border: 2px solid #ddd;
+    border-bottom: 0;
+    border-radius: 32px 32px 0 0 / 19px 19px 0 0;
+}
+.project-page .project-cinema-seat-row-back { bottom: 70%; transform: scale(.53); transform-origin:center bottom; z-index:1; }
+.project-page .project-cinema-seat-row-back-mid { bottom: 54%; transform: scale(.66); transform-origin:center bottom; z-index:2; }
+.project-page .project-cinema-seat-row-mid { bottom: 36%; transform: scale(.78); transform-origin:center bottom; z-index:3; }
+.project-page .project-cinema-seat-row-front-mid { bottom: 17%; transform: scale(.90); transform-origin:center bottom; z-index:4; }
+.project-page .project-cinema-seat-row-front { bottom:0; transform:none; z-index:5; }
+.project-page .project-bottom { grid-column: 1 / -1; grid-row: 4; padding-top: 8px; }
+@media (max-width: 800px) {
+    .project-page .project-video-section { padding: 15px 0 10px; scroll-margin-top: 72px; }
+    .project-page .project-cinema { width: min(100%, 660px, max(240px, calc((100svh - 190px)*1.45))); }
+    .project-page .project-cinema-seating { margin-top: clamp(45px, 7vh, 70px); height: clamp(95px, 18vw, 130px); }
+    .project-page .project-bottom { grid-row: 5; padding-top: 8px; }
+}
+@media (max-width: 480px) {
+    .project-page .project-cinema { width: min(93%, 510px); }
+    .project-page .project-cinema-seating { height: 93px; margin-top: 44px; }
+    .project-page .project-cinema-seat { height: 46px; border-width: 1.5px; }
+}
+
+/* Watch here lands on the actual screen, directly under the fixed navigation. */
+.project-page #watch-cinema { scroll-margin-top: 78px; }
+@media (max-width: 800px) { .project-page #watch-cinema { scroll-margin-top: 68px; } }
+/* Additional individual chairs instead of stretching existing ones.
+   The front row extends just beyond both screen edges. */
+.project-page .project-cinema-seat-row-front { width: 106%; }
+
+
+
+/* Consistent nine-row auditorium — no stretched or detached chairs. */
+.project-page .project-video-section { padding-top: clamp(78px, 11vh, 116px); padding-bottom: 12px; }
+.project-page .project-cinema { width: min(100%, 720px, max(290px, calc((100svh - 345px)*1.68))); padding-bottom: 0; overflow: visible; }
+.project-page .project-cinema-seating { position: relative; width: 100%; max-width: none; height: clamp(135px, 21vh, 180px); margin-top: clamp(32px, 4.5vh, 46px); transform: none; overflow: visible; flex: none; }
+.project-page .project-cinema-seat-row { position: absolute; left: 50%; width: 110%; display: grid; grid-template-columns:repeat(37,minmax(0,1fr)); column-gap: 2px; gap:2px; justify-content: normal; align-items: end; transform-origin: center bottom; }
+.project-page .project-cinema-seat { box-sizing: border-box; display: block; width: 100%; height: auto; aspect-ratio: 0.84; flex: none; background: transparent; border: 1.6px solid #ddd; border-bottom: 0; border-radius: 45% 45% 0 0 / 25% 25% 0 0; min-width: 0; margin: 0; }
+/* Back of auditorium to front: coherent size and depth progression. */
+.project-page .project-cinema-seat-row-far-4 { bottom:78%; transform: translateX(-50%) scale(.60); z-index:1; }
+.project-page .project-cinema-seat-row-far-3 { bottom:69%; transform: translateX(-50%) scale(.65); z-index:2; }
+.project-page .project-cinema-seat-row-far-2 { bottom:60%; transform: translateX(-50%) scale(.70); z-index:3; }
+.project-page .project-cinema-seat-row-far-1 { bottom:51%; transform: translateX(-50%) scale(.75); z-index:4; }
+.project-page .project-cinema-seat-row-back { bottom:42%; transform: translateX(-50%) scale(.80); z-index:5; }
+.project-page .project-cinema-seat-row-back-mid { bottom:32%; transform: translateX(-50%) scale(.85); z-index:6; }
+.project-page .project-cinema-seat-row-mid { bottom:22%; transform: translateX(-50%) scale(.90); z-index:7; }
+.project-page .project-cinema-seat-row-front-mid { bottom:11%; transform: translateX(-50%) scale(.95); z-index:8; }
+.project-page .project-cinema-seat-row-front { bottom:0; width:110%; transform:translateX(-50%); z-index:9; }
+.project-page .project-bottom { display:none; padding:0; margin:0; }
+.project-page .project-inner { padding-bottom: 0; }
+.project-page .cinema-back-to-top { position:absolute; left:-10%; bottom:4%; z-index:10; display:inline-flex; align-items:center; justify-content:center; width:34px; height:34px; border:1px solid rgba(255,255,255,.6); border-radius:50%; color:white; text-decoration:none; font-size:21px; }
+.project-page .cinema-back-to-top:hover { background:rgba(255,255,255,.14); }
+@media(max-width:800px){ .project-page .project-cinema { width:min(97%, 640px); } .project-page .project-cinema-seating {height:145px;} .project-page .project-cinema-seat-row {column-gap:1px;gap:1px;} .project-page .cinema-back-to-top {left:0;bottom:-35px;} }
+
+
+/* Cinema settings copied from approved editor HTML, 22 October 2026 */
+
+.project-page .project-video-section {padding-top:80px!important;padding-bottom:40px!important;}
+.project-page .project-cinema {width:min(95%,720px)!important;}
+.project-page .project-cinema-screen {transform:translate(0px,1px)!important;}
+.project-page .project-cinema-screen .project-video-frame {height:280px!important;aspect-ratio:auto!important;}
+.project-page .project-cinema-seating {height:234px!important;margin-top:40px!important;overflow:visible!important;position:relative!important;left:0px!important;top:0px!important;transform:none!important;}
+.project-page .project-cinema-seat-row {left:50%!important;width:1109.6px!important;display:grid!important;grid-template-columns:repeat(35,29.76px)!important;column-gap:2px!important;transform:translateX(-50%)!important;}
+.project-page .project-cinema-seat {box-sizing:border-box!important;display:block!important;width:100%!important;min-width:0!important;height:auto!important;aspect-ratio:0.84!important;flex:none!important;background:transparent!important;border:1.6px solid #ddd!important;border-bottom:0!important;border-radius:45% 45% 0 0 / 25% 25% 0 0!important;margin:0!important;}
+.project-page footer,.project-page .site-footer {position:relative!important;top:28px!important;margin-top:0!important;border-top-width:1px!important;}
+.project-page .cinema-back-to-top {width:22px!important;height:22px!important;font-size:14px!important;left:50%!important;top:106%!important;bottom:auto!important;transform:translate(-50%,-50%)!important;}
+.project-page .project-cinema-seating>.project-cinema-seat-row:nth-child(1){bottom:185.78742857142856px!important;transform:translateX(-50%) scale(0.6900)!important;z-index:1!important;}
+.project-page .project-cinema-seating>.project-cinema-seat-row:nth-child(2){bottom:154.82285714285715px!important;transform:translateX(-50%) scale(0.7667)!important;z-index:2!important;}
+.project-page .project-cinema-seating>.project-cinema-seat-row:nth-child(3){bottom:123.85828571428571px!important;transform:translateX(-50%) scale(0.8433)!important;z-index:3!important;}
+.project-page .project-cinema-seating>.project-cinema-seat-row:nth-child(4){bottom:92.89371428571428px!important;transform:translateX(-50%) scale(0.9200)!important;z-index:4!important;}
+.project-page .project-cinema-seating>.project-cinema-seat-row:nth-child(5){bottom:61.92914285714286px!important;transform:translateX(-50%) scale(0.9967)!important;z-index:5!important;}
+.project-page .project-cinema-seating>.project-cinema-seat-row:nth-child(6){bottom:30.96457142857143px!important;transform:translateX(-50%) scale(1.0733)!important;z-index:6!important;}
+.project-page .project-cinema-seating>.project-cinema-seat-row:nth-child(7){bottom:0px!important;transform:translateX(-50%) scale(1.1500)!important;z-index:7!important;}
+
+
+
+/* Cinema refinements: keep all project introductions unchanged. */
+/* Bring the entire seating group nearer the cartoon screen by 22px. */
+.project-page .project-cinema-seating { margin-top: 18px !important; }
+/* Opaque dark upholstery prevents rear rows showing through nearer chairs. */
+.project-page .project-cinema-seat { background: #111111 !important; }
+/* Keep the return arrow moving in step with the seats. */
+.project-page .cinema-back-to-top {
+    transform: translate(-50%, calc(-50% + 2px)) !important;
+}
+/* Keep the existing navigation heading and bar the same size at every scroll position. */
+/* Visually integrate the row nearest the cartoon screen with the auditorium.
+   Keep its size, chair count, and perspective; move it 6px towards the next row. */
+.project-page .project-cinema-seating > .project-cinema-seat-row:nth-child(1) {
+    bottom: 179.78742857142856px !important;
+}
+
+/* 22 October — bring the whole cinema finishing group slightly closer. */
+.project-page .project-cinema-seating { margin-top: 8px !important; }
+.project-page .cinema-back-to-top { top: calc(106% - 10px) !important; }
+.project-page footer, .project-page .site-footer { top: 16px !important; }
+
+/* Position of the arrow is determined from the cinema landing viewport,
+   halfway between the final seat row and the visible bottom edge. */
+.project-page .cinema-back-to-top { top: var(--cinema-arrow-midpoint, calc(106% - 10px)) !important; }
+
+/* Keep the footer divider out of the initial cinema framing; leave the arrow untouched. */
+.project-page footer, .project-page .site-footer { top: 32px !important; }
+/* Let the unified scroll controller own scroll easing. */
+html:has(body.project-page) { scroll-behavior: auto !important; }
+
+/* Two-position cinema: closer seating, compact in-frame copyright. */
+.project-page .project-cinema-seating { margin-top: -8px !important; }
+.project-page footer, .project-page .site-footer {
+  position: fixed !important; top: auto !important; bottom: 12px !important;
+  left: 18px !important; right: auto !important; width: auto !important;
+  margin: 0 !important; padding: 0 !important; border: 0 !important;
+  background: transparent !important; z-index: 60 !important;
+  display: block !important; opacity: 0 !important; pointer-events: none !important;
+  transition: opacity .24s ease !important;
+}
+.project-page.at-cinema footer, .project-page.at-cinema .site-footer { opacity: .65 !important; }
+.project-page footer p, .project-page .site-footer p {
+  margin: 0 !important; padding: 0 !important; font-size: 10px !important;
+  font-weight: 400 !important; line-height: 1.2 !important; letter-spacing: .02em !important;
+}
+.project-page footer p:nth-child(n+2), .project-page .site-footer p:nth-child(n+2) { display: none !important; }
+
+/* Move only the cinema return arrow slightly downward. */
+.project-page .cinema-back-to-top { top: calc(var(--cinema-arrow-midpoint, calc(106% - 10px)) + 12px) !important; }
+
+/* 22 Oct: centred back arrow; keep seat layout exactly as it was. */
+.project-page .cinema-back-to-top {
+  top: var(--cinema-arrow-midpoint, calc(106% - 10px)) !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+
+/* 27 October — subtly taller cinema screen, preserving approved vertical composition.
+   The outer screen stays 720px wide at maximum desktop size.
+   Increasing the video-frame height 280px -> 330px makes it less panoramic.
+   Compensate with exactly -50px in the screen-to-seats layout margin:
+   the top of the screen, visible seats, footer and return-arrow framing
+   remain at their previous positions. */
+.project-page .project-cinema-screen .project-video-frame {
+    height: 330px !important;
+}
+.project-page .project-cinema-seating {
+    margin-top: -58px !important;
+}
+
+/* 27 October — balanced spacing around the cinema screen.
+   Divider to outer screen top: 80px section padding - 27px screen offset = 53px.
+   Bottom of the outer screen to first (furthest) seat row top:
+   27px screen offset + margin - 179.7874px row bottom + 234px seating height
+   - approximately 24.45px scaled seat height = margin + 56.76px.
+   A -3.76px seating margin gives approximately 53px on both sides.
+   All screen dimensions, seat sizing/perspective and other layout rules unchanged. */
+.project-page .project-cinema-seating {
+    margin-top: -3.76px !important;
+}
+
+/* 27 October — lift the complete cinema (screen and seating together) by 24px.
+   Preserves all internal proportions, spacing, and seat geometry. */
+.project-page .project-cinema {
+    top: -24px !important;
+}
+
+/* Lower screen and seating together by a further 5px; keep the return arrow fixed. */
+.project-page .project-cinema-screen {
+    top: -15px !important;
+}
+.project-page .project-cinema-seating {
+    top: -15px !important;
+}
+
+/* 29 October — screen-focused project cinema, without auditorium seats. */
+.project-page .project-cinema {
+    width: min(96%, 1120px, max(320px, calc((100svh - 180px) * 16 / 9))) !important;
+    padding-bottom: 15px !important;
+}
+.project-page .project-cinema-screen {
+    width: 100% !important;
+}
+.project-page .project-cinema-screen .project-video-frame {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9 !important;
+}
+.project-page .project-cinema-seat-row,
+.project-page .project-cinema-seat {
+    display: none !important;
+}
+.project-page .project-cinema-seating {
+    height: 0 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    top: 0 !important;
+}
+.project-page .project-cinema-floor {
+    display: none !important;
+}
+.project-page .cinema-back-to-top {
+    top: 48px !important;
+    bottom: auto !important;
+}
+@media (max-width: 800px) {
+    .project-page .project-cinema {
+        width: min(96%, 1120px) !important;
+    }
+}
+
+/* Show only the video itself — no cinema screen outline or outer frame. */
+.project-page .project-cinema-screen {
+    padding: 0 !important;
+    border: 0 !important;
+    outline: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+.project-page .project-cinema-screen .project-video-frame {
+    border: 0 !important;
+    outline: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Centre the enlarged video vertically in the watch-section viewport.
+   Shift the entire viewing block down by 30px from its previous position. */
+.project-page .project-cinema {
+    top: 6px !important;
+}
+
+/* Video-only layout: keep the back-to-top arrow beneath the player,
+   centred in the remaining space before the bottom of the section. */
+.project-page .cinema-back-to-top {
+    top: calc(100% + 12px) !important;
+    bottom: auto !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+/* Consistent 16:9 player across every individual project. */
+.project-page .project-cinema-screen .project-video-frame,
+.project-page .project-cinema-screen video,
+.project-page .project-cinema-screen iframe {
+    aspect-ratio: 16 / 9 !important;
+}
+.project-page .project-cinema-screen .project-video-frame {
+    height: auto !important;
+}
+
+/* Centre the clip-navigation arrows alongside the actual video image.
+   The cinema container has 15px of bottom padding and its screen is
+   offset 15px upward, so account for both in the midpoint. */
+.project-page .project-cinema > .cfdl-clip-arrow {
+    top: calc(50% - 22.5px) !important;
+    transform: translateY(-50%) !important;
+}
+
+/* Shared November typography and accent rules for every project page.
+   All layout dimensions, player geometry and content remain unchanged. */
+html body.project-page {
+  font-family: 'IBM Plex Mono', monospace !important;
+}
+html body.project-page #site-header .header-identity h1,
+html body.project-page #site-header .header-identity h1 a,
+html body.project-page .project-intro h2 {
+  font-family: 'IBM Plex Sans', Arial, sans-serif !important;
+  font-style: normal !important;
+  color: #f5f5f0 !important;
+}
+html body.project-page #site-header nav a,
+html body.project-page #site-header .role,
+html body.project-page .project-kicker,
+html body.project-page .project-credit,
+html body.project-page .project-watch-link,
+html body.project-page .project-prose p,
+html body.project-page .project-section-heading,
+html body.project-page .project-back {
+  font-family: 'IBM Plex Mono', monospace !important;
+  font-style: normal !important;
+}
+html body.project-page #site-header .role,
+html body.project-page .project-kicker { color: #dcb88f !important; }
+html body.project-page #site-header nav a::after { background: #dcb88f !important; }
+html body.project-page #site-header nav a:hover,
+html body.project-page .project-watch-link:hover,
+html body.project-page .project-watch-link:focus-visible,
+html body.project-page .project-back:hover {
+  color: #dcb88f !important;
+  border-color: #dcb88f !important;
+}
+html body.project-page .project-prose em { color: inherit; }
+
+/* Restore the compact project-summary rhythm from the earlier layout while
+   retaining the current monospace typeface and two-column composition. */
+html body.project-page .project-prose p {
+  font-size: clamp(15px, 1.2vw, 16px) !important;
+  line-height: 1.55 !important;
+  margin-bottom: 18px !important;
+}
+html body.project-page .project-prose p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* A crisp white hairline around the video, without changing its dimensions. */
+html body.project-page .project-cinema-screen .project-video-frame {
+  outline: 1px solid rgba(220, 220, 220, .42) !important;
+  outline-offset: 0 !important;
+}
+
+/* Project pages use a still, clean black backdrop rather than drifting dust. */
+html body.project-page #dust-canvas { display: none !important; }
+
+/* Position every scene title beneath the central play control, including
+   the custom CFDL player. Keep the title on the thumbnail, not in the page flow. */
+html body.project-page .portfolio-clip-player .portfolio-clip-title,
+html body.project-page .cfdl-player .cfdl-clip-title {
+  top: calc(50% + 55px) !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: max-content !important;
+  max-width: calc(100% - 32px) !important;
+  transform: translateX(-50%) !important;
+  text-align: center !important;
+  color: #f5f3ee !important;
+  font-family: 'Instrument Sans', Arial, sans-serif !important;
+  font-size: clamp(14px, 1.35vw, 19px) !important;
+  font-weight: 500 !important;
+  font-style: italic !important;
+  line-height: 1.3 !important;
+  letter-spacing: .015em !important;
+  text-shadow: 0 2px 12px rgba(0,0,0,.95) !important;
+}
+@media (max-width: 500px) {
+  html body.project-page .portfolio-clip-player .portfolio-clip-title,
+  html body.project-page .cfdl-player .cfdl-clip-title {
+    top: calc(50% + 43px) !important;
+    font-size: 13px !important;
+  }
+}
+
+/* A single, gentle entrance for the whole project page, including its header,
+   text and player. The page remains in its final layout while fading in. */
+@keyframes projectPageWholeFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+html body.project-page {
+  animation: projectPageWholeFade 1050ms cubic-bezier(.42,0,.22,1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  html body.project-page { animation: none !important; }
+}
+
+/* Phone-only: natural project-page scrolling and a tighter page ending. */
+@media (max-width: 767px) {
+  html:has(body.project-page) { scroll-behavior: auto !important; }
+  body.project-page { padding-bottom: 0 !important; }
+  .project-page .project-inner { padding-bottom: 0 !important; }
+  .project-page .project-video-section { padding-bottom: 0 !important; }
+  .project-page .project-cinema { padding-bottom: 0 !important; }
+  /* Natural phone scrolling makes the separate return-to-top arrow redundant. */
+  .project-page .cinema-back-to-top { display: none !important; }
+  /* CFDL uses cinema-level arrows; position them on the video itself. */
+  .project-page .project-cinema > .cfdl-clip-arrow {
+    top: var(--cfdl-arrow-midline, 50%) !important;
+    z-index: 25 !important;
+    width: 25px !important;
+    height: 38px !important;
+    background: rgba(0,0,0,.42) !important;
+  }
+  .project-page .project-cinema > .cfdl-clip-prev { left: 0 !important; }
+  .project-page .project-cinema > .cfdl-clip-next { right: 0 !important; }
+  .project-page .project-cinema > .cfdl-clip-arrow svg {
+    width: 15px !important;
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,.85));
+  }
+  /* All other project players position arrows inside the video frame. */
+  .project-page .portfolio-clip-arrow {
+    top: 50% !important;
+    width: 25px !important;
+    height: 38px !important;
+    color: #fff !important;
+    background: rgba(0,0,0,.42) !important;
+    font-size: 24px !important;
+    text-shadow: 0 1px 4px rgba(0,0,0,.85);
+  }
+  .project-page .portfolio-clip-arrow.prev { left: 0 !important; }
+  .project-page .portfolio-clip-arrow.next { right: 0 !important; }
+}
+
+/* Desktop CFDL navigation matches the discreet on-video LMS arrow buttons. */
+@media (min-width: 768px) {
+  .project-page .project-cinema > .cfdl-clip-arrow {
+    width: 40px !important;
+    height: 56px !important;
+    background: rgba(0,0,0,.48) !important;
+    color: #fff !important;
+    z-index: 25 !important;
+  }
+  .project-page .project-cinema > .cfdl-clip-prev { left: 0 !important; }
+  .project-page .project-cinema > .cfdl-clip-next { right: 0 !important; }
+  .project-page .project-cinema > .cfdl-clip-arrow svg {
+    width: 16px !important;
+    height: 28px !important;
+    stroke-width: 2.5 !important;
+  }
+}

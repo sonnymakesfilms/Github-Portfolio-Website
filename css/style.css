@@ -1,0 +1,1034 @@
+
+/* =========================================
+   BASIC WEBSITE SETTINGS
+   ========================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 95px;
+}
+
+body {
+    background: #050505;
+    color: #f5f5f0;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* =========================================
+   FLOATING BACKGROUND SPECKS
+   ========================================= */
+
+#dust-canvas {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+    background: transparent;
+}
+
+main,
+footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* =========================================
+   FIXED HEIGHT STICKY HEADER
+   ========================================= */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    padding: 7px 5% 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #050505;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+    min-height: 60px;
+
+    transition:
+        background-color 700ms ease,
+        border-color 700ms ease,
+        box-shadow 700ms ease;
+}
+
+.site-header h1 {
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 28px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: -0.8px;
+    line-height: 1.2;
+}
+
+.role {
+    color: #9d9d9d;
+    text-transform: none;
+    letter-spacing: 1px;
+    font-size: 12px;
+    margin-top: 3px;
+    font-family: "Instrument Sans", Arial, sans-serif;
+}
+
+.site-header.is-scrolled {
+    padding: 7px 5% 5px;
+    background: rgba(5, 5, 5, 0.97);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-bottom-color: rgba(255, 255, 255, 0.10);
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.12);
+}
+
+.site-header.is-scrolled h1 {
+    font-size: 28px;
+}
+
+.site-header.is-scrolled .role {
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+/* =========================================
+   NAVIGATION
+   ========================================= */
+
+nav {
+    display: flex;
+    gap: 30px;
+    white-space: nowrap;
+    align-items: center;
+    padding-top: 0;
+}
+
+nav a {
+    position: relative;
+    display: inline-block;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 14px;
+    text-transform: none;
+    letter-spacing: 0.5px;
+    color: #c8c8c8;
+    padding-bottom: 6px;
+    transition: color 300ms ease;
+}
+
+nav a:hover,
+nav a.is-active {
+    color: #ffffff;
+}
+
+nav a::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #f5f5f0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 350ms ease;
+}
+
+nav a:hover::after,
+nav a.is-active::after {
+    transform: scaleX(1);
+}
+
+/* =========================================
+   CINEMATIC SCROLL REVEALS
+   ========================================= */
+
+.motion-ready .reveal {
+    opacity: 0;
+
+    transition:
+        opacity 1600ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 1600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.motion-ready .reveal[data-reveal="up"] {
+    transform: translateY(45px);
+}
+
+.motion-ready .reveal[data-reveal="left"] {
+    transform: translateX(-50px);
+}
+
+.motion-ready .reveal[data-reveal="right"] {
+    transform: translateX(50px);
+}
+
+.motion-ready .reveal.is-visible {
+    opacity: 1;
+    transform: translate(0, 0);
+}
+
+.motion-ready .reveal[data-delay="1"] {
+    transition-delay: 250ms;
+}
+
+.motion-ready .reveal[data-delay="2"] {
+    transition-delay: 500ms;
+}
+
+/* =========================================
+   HOMEPAGE HERO
+   GEORGIA FONT PRESERVED
+   ========================================= */
+
+.hero {
+    min-height: 45vh;
+    display: flex;
+    align-items: center;
+    padding: 40px 5%;
+}
+
+.intro {
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: normal;
+    font-weight: 400;
+    font-size: clamp(30px, 4.65vw, 65px);
+    line-height: 1.13;
+    max-width: 1100px;
+    letter-spacing: -1.1px;
+}
+
+/* =========================================
+   SHOWREELS
+   ========================================= */
+
+.showreels {
+    padding: 45px 5% 60px;
+    border-top: 1px solid #333333;
+}
+
+.showreels h2 {
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: clamp(38px, 5vw, 70px);
+    margin-bottom: 45px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.showreel-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.video-placeholder {
+    aspect-ratio: 16 / 9;
+    background: #232323;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+
+    transition:
+        transform 300ms ease,
+        background-color 300ms ease;
+}
+
+.video-placeholder:hover {
+    transform: scale(0.99);
+    background: #2d2d2d;
+}
+
+.video-placeholder span {
+    font-size: 50px;
+}
+
+.showreel-card h3 {
+    margin-top: 15px;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.showreel-link {
+    display: flex;
+    justify-content: center;
+    margin-top: 45px;
+}
+
+.showreel-link .button {
+    margin-top: 0;
+}
+
+/* =========================================
+   ABOUT SECTION
+   ORIGINAL INSTRUMENT SANS HEADING
+   ========================================= */
+
+.about {
+    padding: 65px 5% 65px;
+    border-top: 1px solid #333333;
+    max-width: none;
+}
+
+.about h2 {
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: clamp(38px, 5vw, 70px);
+    margin-bottom: 55px;
+    font-weight: 400;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 60px;
+    align-items: start;
+}
+
+.about-text > p {
+    max-width: 680px;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 1.75;
+    letter-spacing: -0.15px;
+    color: #e8e6e1;
+    margin-bottom: 34px;
+}
+
+/* =========================================
+   EDITORIAL TAGLINE
+   ========================================= */
+
+.about-manifesto {
+    margin: 58px 0 62px;
+    max-width: 800px;
+}
+
+.about-manifesto-line {
+    display: block;
+    width: 42px;
+    height: 1px;
+    background: rgba(232, 230, 225, 0.6);
+    margin-bottom: 25px;
+}
+
+.about-manifesto p {
+    margin: 0;
+    color: #f5f1e9;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(32px, 3vw, 43px);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.22;
+    letter-spacing: -1px;
+    text-wrap: balance;
+}
+
+/* =========================================
+   ABOUT PHOTOGRAPHS
+   ========================================= */
+
+.about-images {
+    display: flex;
+    flex-direction: column;
+    gap: 85px;
+    width: 100%;
+    max-width: 420px;
+    margin-top: -35px;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: stretch;
+}
+
+.about-image {
+    aspect-ratio: 3 / 4;
+    background: #232323;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.about-image-one {
+    width: 88%;
+    margin-top: -20px;
+    margin-right: auto;
+    margin-left: 0;
+}
+
+.about-image-two {
+    width: 88%;
+    margin-left: auto;
+    margin-right: 0;
+    position: relative;
+    left: 25px;
+}
+
+.about-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* =========================================
+   BUTTON
+   ========================================= */
+
+.button {
+    display: inline-block;
+    margin-top: 20px;
+    border-bottom: 1px solid #ffffff;
+    padding-bottom: 4px;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* =========================================
+   MY WORK
+   ORIGINAL INSTRUMENT SANS HEADINGS
+   ========================================= */
+
+.work-page {
+    padding: 65px 0 35px;
+    border-top: 1px solid #333333;
+    overflow: hidden;
+}
+
+.work-category {
+    margin-bottom: 20px;
+}
+
+.work-category:last-child {
+    margin-bottom: 10px;
+}
+
+/* Extra breathing room after the Narrative carousel. */
+.work-category + .work-category {
+    margin-top: 34px;
+}
+
+.work-category h3 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(29px, 3.3vw, 49px);
+    font-style: italic;
+    font-weight: 400;
+    text-align: center;
+    margin: 0 5% 2px;
+}
+
+/* =========================================
+   3D CAROUSEL
+   ========================================= */
+
+.coverflow {
+    position: relative;
+    width: 100%;
+}
+
+.coverflow-stage {
+    position: relative;
+    width: 100%;
+    height: clamp(270px, 37vw, 470px);
+    perspective: 1200px;
+    perspective-origin: center center;
+    overflow: hidden;
+    touch-action: pan-y;
+    outline: none;
+}
+
+.coverflow-stage:focus-visible {
+    outline: 1px solid #777777;
+    outline-offset: -3px;
+}
+
+.coverflow .project-card {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 58%;
+    max-width: 780px;
+    min-width: 0;
+    display: block;
+    transform-origin: center center;
+    backface-visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+
+    transition:
+        transform 800ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 650ms ease,
+        filter 650ms ease;
+}
+
+.coverflow .project-card.is-active {
+    opacity: 1;
+    filter: brightness(1);
+}
+
+.coverflow .project-card.is-side {
+    filter: brightness(0.75);
+}
+
+.coverflow .project-card.is-side:hover {
+    filter: brightness(0.95);
+}
+
+.coverflow .project-card.is-hidden {
+    opacity: 0;
+}
+
+/* =========================================
+   PROJECT IMAGES
+   ========================================= */
+
+.project-image {
+    position: relative;
+    aspect-ratio: 3840 / 1634;
+    background: #232323;
+    margin-bottom: 9px;
+    overflow: hidden;
+    border-radius: 6px;
+    isolation: isolate;
+
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.45),
+        0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.coverflow .project-card.is-active .project-image {
+    box-shadow:
+        0 25px 65px rgba(0, 0, 0, 0.7),
+        0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* =========================================
+   PROJECT TITLES AND CREDITS
+   ========================================= */
+
+.project-card .project-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+    column-gap: 10px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.project-card .project-heading h4 {
+    display: inline;
+    font-size: 22px;
+    font-weight: 400;
+    font-style: italic;
+    color: #f5f5f0;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.project-card .project-type {
+    display: inline;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    font-style: normal;
+    color: #cccccc;
+    line-height: 1.4;
+}
+
+.project-card .project-type::before {
+    content: "-";
+    display: inline-block;
+    margin-right: 8px;
+    font-style: normal;
+}
+
+.project-card > p {
+    color: #aaaaaa;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.4;
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* =========================================
+   CAROUSEL LABEL FADE IN
+   ========================================= */
+
+.coverflow .project-card .project-heading,
+.coverflow .project-card > p {
+    opacity: 0;
+    transform: translateY(8px);
+
+    transition:
+        opacity 550ms ease,
+        transform 550ms ease;
+
+    transition-delay: 0ms;
+}
+
+.coverflow .project-card.is-active .project-heading,
+.coverflow .project-card.is-active > p {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 350ms;
+}
+
+/* =========================================
+   CAROUSEL CONTROLS
+   ========================================= */
+
+.coverflow-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 28px;
+    margin-top: 0;
+}
+
+.coverflow-prev,
+.coverflow-next {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: #f5f5f0;
+    border: 1px solid #555555;
+    border-radius: 50%;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 23px;
+    cursor: pointer;
+
+    transition:
+        background-color 250ms ease,
+        border-color 250ms ease,
+        transform 250ms ease;
+}
+
+.coverflow-prev:hover,
+.coverflow-next:hover {
+    background: #292929;
+    border-color: #f5f5f0;
+    transform: scale(1.08);
+}
+
+.coverflow-prev:focus-visible,
+.coverflow-next:focus-visible {
+    outline: 2px solid #f5f5f0;
+    outline-offset: 4px;
+}
+
+.coverflow-counter {
+    color: #999999;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    min-width: 75px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+/* =========================================
+   CONTACT SECTION
+   ========================================= */
+
+.contact-section {
+    padding: 95px 5% 105px;
+    border-top: 1px solid #333333;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+}
+
+.contact-heading h2 {
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: clamp(38px, 5vw, 70px);
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+.contact-details {
+    padding-top: 7px;
+}
+
+.contact-intro {
+    color: #aaaaaa;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    max-width: 500px;
+}
+
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.contact-links a {
+    color: #f5f5f0;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: clamp(18px, 2.5vw, 26px);
+    border-bottom: 1px solid #777777;
+    padding-bottom: 5px;
+
+    transition:
+        color 300ms ease,
+        border-color 300ms ease;
+}
+
+.contact-links a:hover {
+    color: #aaaaaa;
+    border-color: #aaaaaa;
+}
+
+.contact-links a:focus-visible {
+    outline: 2px solid #f5f5f0;
+    outline-offset: 5px;
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+
+footer {
+    border-top: 1px solid #333333;
+    padding: 40px 5%;
+    display: flex;
+    justify-content: space-between;
+    color: #777777;
+    font-family: "Instrument Sans", Arial, sans-serif;
+    font-size: 13px;
+}
+
+/* =========================================
+   MOBILE AND TABLET
+   ========================================= */
+
+@media (max-width: 800px) {
+
+    html {
+        scroll-padding-top: 140px;
+    }
+
+    .site-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 9px 5% 9px;
+        min-height: 0;
+    }
+
+    .site-header.is-scrolled {
+        gap: 8px;
+        padding: 9px 5% 9px;
+    }
+
+    .site-header h1,
+    .site-header.is-scrolled h1 {
+        font-size: 26px;
+    }
+
+    .role,
+    .site-header.is-scrolled .role {
+        font-size: 11px;
+        margin-top: 3px;
+    }
+
+    nav {
+        gap: 18px;
+        flex-wrap: wrap;
+        padding-top: 0;
+    }
+
+    nav a {
+        font-size: 12px;
+    }
+
+    .hero {
+        min-height: 35vh;
+    }
+
+    .showreel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+
+    .about-text > p {
+        font-size: 19px;
+        line-height: 1.7;
+        margin-bottom: 27px;
+    }
+
+    .about-manifesto {
+        margin: 43px 0 47px;
+    }
+
+    .about-manifesto p {
+        font-size: clamp(30px, 7vw, 39px);
+    }
+
+    .about-images {
+        max-width: 390px;
+        gap: 85px;
+        margin-top: 0;
+    }
+
+    .about-image-one {
+        width: 88%;
+        margin-top: -20px;
+    }
+
+    .about-image-two {
+        width: 88%;
+        left: 12px;
+    }
+
+    .work-category {
+        margin-bottom: 20px;
+    }
+
+    .work-category:last-child {
+        margin-bottom: 10px;
+    }
+
+    .work-category h3 {
+        margin-bottom: 4px;
+    }
+
+    .coverflow-stage {
+        height: clamp(265px, 66vw, 440px);
+        perspective: 800px;
+    }
+
+    .coverflow .project-card {
+        width: 78%;
+    }
+
+    .project-card .project-heading h4 {
+        font-size: 19px;
+    }
+
+    .project-card .project-type {
+        font-size: 16px;
+    }
+
+    .project-card > p {
+        font-size: 13px;
+    }
+
+    .coverflow-controls {
+        margin-top: 0;
+        gap: 22px;
+    }
+
+    .coverflow-prev,
+    .coverflow-next {
+        width: 42px;
+        height: 42px;
+        font-size: 21px;
+    }
+
+    .contact-section {
+        padding: 85px 5% 95px;
+    }
+
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .contact-details {
+        padding-top: 0;
+    }
+
+    .contact-intro {
+        font-size: 16px;
+    }
+
+    .contact-links a {
+        overflow-wrap: anywhere;
+    }
+
+    footer {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .motion-ready .reveal[data-reveal="left"] {
+        transform: translateX(-30px);
+    }
+
+    .motion-ready .reveal[data-reveal="right"] {
+        transform: translateX(30px);
+    }
+
+    .motion-ready .reveal[data-reveal="up"] {
+        transform: translateY(30px);
+    }
+
+    .motion-ready .reveal.is-visible {
+        transform: translate(0, 0);
+    }
+}
+
+/* =========================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    .site-header,
+    .site-header h1,
+    .role,
+    nav a,
+    nav a::after {
+        transition: none;
+    }
+
+    .motion-ready .reveal,
+    .motion-ready .reveal[data-reveal="up"],
+    .motion-ready .reveal[data-reveal="left"],
+    .motion-ready .reveal[data-reveal="right"] {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
+
+    .coverflow .project-card,
+    .coverflow-prev,
+    .coverflow-next {
+        transition-duration: 0.01ms;
+    }
+
+    .coverflow .project-card .project-heading,
+    .coverflow .project-card > p {
+        transition: none;
+        transform: none;
+    }
+}
+
+/* =========================================
+   SUBTLE PROJECT HOVER ANIMATION
+   ========================================= */
+
+.coverflow .project-card .project-image {
+    outline: 1px solid transparent;
+    outline-offset: -1px;
+
+    transition:
+        box-shadow 350ms ease,
+        outline-color 350ms ease;
+}
+
+.coverflow .project-card.is-active:hover .project-image,
+.coverflow .project-card.is-active:focus-visible .project-image {
+    outline-color: rgba(255, 255, 255, 0.45);
+
+    box-shadow:
+        0 25px 65px rgba(0, 0, 0, 0.7),
+        0 8px 25px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.coverflow .project-card.is-active .project-image::after {
+    content: "View project ↗";
+
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    padding: 8px 12px;
+
+    background: rgba(17, 17, 17, 0.85);
+    color: #f5f5f0;
+
+    font: 400 12px/1.2 "Instrument Sans", Arial, sans-serif;
+    letter-spacing: 0.2px;
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+
+    opacity: 0;
+    transform: translateY(7px);
+    pointer-events: none;
+
+    transition:
+        opacity 330ms ease,
+        transform 330ms ease;
+}
+
+.coverflow .project-card.is-active:hover .project-image::after,
+.coverflow .project-card.is-active:focus-visible .project-image::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.coverflow .project-card.is-side:hover .project-image {
+    outline-color: rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .coverflow .project-card .project-image,
+    .coverflow .project-card.is-active .project-image::after {
+        transition: none;
+    }
+}
+
+/* Restrained shared accent; decorative dividers stay neutral. */
+.site-header .header-identity h1,
+.site-header .header-identity h1 a { color: #f5f5f0; }
+.site-header,
+.site-header.is-scrolled { border-bottom-color: rgba(245, 245, 240, .22); }
+.site-header nav a::after { background: #dcb88f; }
+.about,
+.work-page,
+.contact-section,
+footer { border-top-color: rgba(245, 245, 240, .22); }
+.contact-links a { border-bottom-color: rgba(245, 245, 240, .28); }
