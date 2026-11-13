@@ -988,3 +988,14 @@ html body.project-page {
     stroke-width: 2.5 !important;
   }
 }
+
+/* Natural scrolling on all individual project pages (desktop and mobile).
+   The old two-position scroll snap controller has been removed from the pages. */
+html:has(body.project-page) { scroll-behavior: auto !important; }
+body.project-page { padding-bottom: 0 !important; }
+.project-page footer, .project-page .site-footer {
+  position: relative !important;
+  left: auto !important; right: auto !important; bottom: auto !important; top: auto !important;
+  opacity: 1 !important; pointer-events: auto !important;
+  width: auto !important; margin: 0 !important;
+}

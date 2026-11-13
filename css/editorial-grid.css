@@ -1040,3 +1040,10 @@ html body#top #work .editorial-grid .project-card:first-child .project-image {
     white-space: nowrap !important;
   }
 }
+
+/* Subtle 5px corner radius on homepage project thumbnails only. */
+html body#top #work .editorial-grid .project-image,
+html body#top #work .editorial-grid .project-card:first-child .project-image {
+  border-radius: 5px !important;
+  overflow: hidden !important;
+}

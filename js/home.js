@@ -353,12 +353,13 @@ updateHeader();
             trackWidth - viewportWidth
         );
 
-        // Move the timeline as the visitor scrolls. Scaling against the entire
-        // document made movement imperceptible on long portfolio pages.
-        const movement = -Math.min(
-            maxTravel,
-            Math.max(0, window.scrollY) * 0.72
+        // Distribute the timeline's entire horizontal travel over the full
+        // scrollable height, rather than stopping when its x-offset hits a cap.
+        const scrollRange = Math.max(1,
+            document.documentElement.scrollHeight - window.innerHeight
         );
+        const progress = Math.min(1, Math.max(0, window.scrollY / scrollRange));
+        const movement = -maxTravel * progress;
 
         movingTracks.style.setProperty(
             '--timeline-x',
