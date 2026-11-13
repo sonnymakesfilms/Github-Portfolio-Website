@@ -61,3 +61,16 @@
 @media(prefers-reduced-motion:reduce) {
   .project-page .project-contact .contact-links a:after {transition:none;}
 }
+
+/* Distinguish the invitation from the muted descriptive paragraphs. */
+.project-page .project-contact .contact-details > .contact-intro {
+  color: #c8c8c8;
+  font-size: clamp(17px, 1.45vw, 20px);
+  font-weight: 400;
+}
+@media (max-width: 800px) {
+  .project-page .project-contact .contact-details > .contact-intro {
+    color: #f5f5f0;
+    font-size: 18px;
+  }
+}

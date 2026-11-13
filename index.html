@@ -1849,6 +1849,20 @@ html body#top #contact .contact-links a {
   line-height: 1.25 !important;
 }
 </style>
+<style id="contact-question-emphasis">
+/* Subtle visual hierarchy for the invitation above the contact links. */
+html body#top #contact .contact-details > .contact-intro {
+  color: #c8c8c8 !important;
+  font-size: clamp(17px, 1.45vw, 20px) !important;
+  font-weight: 400 !important;
+}
+@media (max-width: 800px) {
+  html body#top #contact .contact-details > .contact-intro {
+    color: #f5f5f0 !important;
+    font-size: 18px !important;
+  }
+}
+</style>
 </head>
 <body id="top">
 <!-- HEADER -->
